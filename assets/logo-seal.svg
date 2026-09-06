@@ -2,18 +2,19 @@
   <circle cx="120" cy="120" r="114" fill="none" stroke="#2a241c" stroke-width="3"/>
   <circle cx="120" cy="120" r="84" fill="none" stroke="#2a241c" stroke-width="1.2"/>
 
-  <path id="topArc" d="M 21 120 A 99 99 0 0 1 219 120" fill="none"/>
-  <path id="botArc" d="M 219 120 A 99 99 0 0 1 21 120" fill="none"/>
+  <!-- Дуги короче полного полукруга (со стыков дот сняты по 15°) — гарантированный
+       геометрический зазор у обеих точек-разделителей, не зависящий от того,
+       насколько по-разному разные движки посчитают textLength/lengthAdjust. -->
+  <path id="topArc" d="M 24.37 94.38 A 99 99 0 0 1 215.63 94.38" fill="none"/>
+  <path id="botArc" d="M 215.63 145.62 A 99 99 0 0 1 24.37 145.62" fill="none"/>
 
-  <text font-family="Georgia, 'Times New Roman', serif" font-size="16" dominant-baseline="central"
-        letter-spacing="1" fill="#2a241c">
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="16" dominant-baseline="central" fill="#2a241c">
     <textPath href="#topArc" startOffset="50%" text-anchor="middle"
-              textLength="260" lengthAdjust="spacing">ЖУРНАЛ ПРИКЛАДНОЙ ЛЖЕНАУКИ</textPath>
+              textLength="225" lengthAdjust="spacing">ЖУРНАЛ ПРИКЛАДНОЙ ЛЖЕНАУКИ</textPath>
   </text>
-  <text font-family="Georgia, 'Times New Roman', serif" font-size="16" dominant-baseline="central"
-        letter-spacing="1" fill="#2a241c">
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="16" dominant-baseline="central" fill="#2a241c">
     <textPath href="#botArc" startOffset="50%" text-anchor="middle"
-              textLength="260" lengthAdjust="spacing">ИНСТИТУТ ПРИКЛАДНОЙ МЕТАФИЗИКИ</textPath>
+              textLength="225" lengthAdjust="spacing">ИНСТИТУТ ПРИКЛАДНОЙ МЕТАФИЗИКИ</textPath>
   </text>
 
   <circle cx="21" cy="120" r="2" fill="#2a241c"/>
