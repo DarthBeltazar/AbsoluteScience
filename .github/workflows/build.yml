@@ -1,0 +1,68 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile articles (XeLaTeX via latexmk)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: articles
+          root_file: |
+            tenzornaya_psikhometriya.tex
+            termodinamika_burmaldy.tex
+          latexmk_use_xelatex: true
+
+      - name: Check index.html is in sync with articles/articles.json
+        run: python3 scripts/gen_site.py --check
+
+      - name: Upload compiled PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdfs
+          path: articles/*.pdf
+          if-no-files-found: error
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get freshly built PDFs
+        uses: actions/download-artifact@v4
+        with:
+          name: pdfs
+          path: articles
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site/assets _site/articles _site/guide
+          cp index.html _site/
+          cp -r assets/. _site/assets/
+          cp -r guide/. _site/guide/
+          cp articles/*.pdf articles/*.tex _site/articles/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4

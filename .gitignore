@@ -1,0 +1,26 @@
+# LaTeX build artifacts (latexmk / XeLaTeX)
+articles/*.aux
+articles/*.log
+articles/*.out
+articles/*.toc
+articles/*.synctex.gz
+articles/*.synctex
+articles/*.synctex(busy)
+articles/*.fls
+articles/*.fdb_latexmk
+articles/*.bbl
+articles/*.blg
+articles/*.run.xml
+articles/*.bcf
+articles/*.xdv
+
+# Compiled articles are versioned on purpose — do not ignore articles/*.pdf
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp

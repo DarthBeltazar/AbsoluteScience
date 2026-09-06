@@ -1,0 +1,126 @@
+% !TeX program = xelatex
+% !TEX encoding = UTF-8
+%
+% Шаблон статьи «Журнала Прикладной Лженауки».
+% Порядок разделов и обязательные элементы — см. guide/…guide.md, §2.
+% Скопируйте этот файл под именем <slug>.tex, заполните TODO, соберите
+% `cd articles && latexmk`, затем добавьте запись в articles/articles.json
+% и прогоните `python scripts/gen_site.py`.
+
+\documentclass[11pt,a4paper]{article}
+\usepackage{zhpl}
+
+% TODO: заголовок в два уровня — интригующий + строгий академический через двоеточие
+\title{\textbf{TODO — интригующий заголовок:\\ TODO — строгий академический подзаголовок}}
+\author{\zhplauthors}
+
+% TODO: номер выпуска и DOI вида 10.9999/жпл.20XX.000N
+\zhplsetup{TODO}{10.9999/жпл.2026.000TODO}
+
+\begin{document}
+\maketitle
+
+\zhplbadges
+
+% TODO: DOI и диапазон страниц — как в колонтитуле
+\zhplciteas{Александров Р.\,Г., Антропикович К.\,С. (2026). TODO — краткое название.
+  \textit{Журнал Прикладной Лженауки}, \textbf{1}(TODO), 1--TODO. DOI: 10.9999/жпл.2026.000TODO}
+
+% TODO: графический реферат — 3–4 бокса со стрелками, логика статьи одним взглядом
+\zhplgraphicabstract{%
+  \begin{tikzpicture}[node distance=0.9cm, every node/.style={font=\footnotesize}]
+    \node[draw,rounded corners,fill=blue!5,minimum width=2.4cm,minimum height=1cm,align=center] (n1) {TODO};
+    \node[draw,rounded corners,fill=blue!5,minimum width=2.4cm,minimum height=1cm,align=center,right=of n1] (n2) {TODO};
+    \node[draw,rounded corners,fill=green!8,minimum width=2.4cm,minimum height=1cm,align=center,right=of n2] (n3) {TODO};
+    \draw[-{Latex[length=2.5mm]},very thick] (n1) -- (n2);
+    \draw[-{Latex[length=2.5mm]},very thick] (n2) -- (n3);
+  \end{tikzpicture}}{%
+  TODO — одна фраза: от бытовой постановки к формальному инварианту, ценой всей информации.}
+
+\begin{zhplhighlights}
+\begin{itemize}
+\setlength\itemsep{0pt}
+\setlength\parskip{0pt}
+\item TODO — 3–5 пунктов, каждый со ссылкой на Теорему N.
+\end{itemize}
+\end{zhplhighlights}
+
+\begin{zhplreviews}
+\textit{«TODO — переубеждённый скептик.»} -- Рецензент 1\\
+\textit{«Замечаний нет.»} -- Рецензент 2\\
+\textit{«TODO — мета-шутка: согласно Теореме N этой же статьи объективная рецензия невозможна.»} -- Рецензент 3
+\end{zhplreviews}
+
+\begin{zhplsignificance}
+TODO — один грандиозный абзац в духе PNAS: наивная (не-строгая) версия темы веками
+считалась неразрешимой; настоящая работа впервые показывает обратное; результат
+применим ко всей человеческой цивилизации.
+\end{zhplsignificance}
+
+\begin{abstract}
+\noindent Здесь мы впервые показываем, что TODO --- не <<бытовая>>, а строгая
+TODO-закономерность. Далее: проблема $\to$ метод $\to$ результаты $\to$ ограничения.
+
+\medskip
+\noindent\textbf{Ключевые слова:} TODO, TODO, лженаука
+\end{abstract}
+
+\section{Введение}
+% TODO: постановка проблемы как «на самом деле геометрической/термодинамической и т.п.,
+% а не той, за которую её принимали».
+
+\section{TODO — раздел 1: формальный объект}
+% TODO: ввести метрику/тензор/оператор/потенциал по теме статьи.
+
+\begin{definition}[TODO — говорящее название]
+TODO — строгая формулировка.
+\end{definition}
+
+\begin{figure}[htbp]
+\centering
+% TODO: иллюстрация, посчитанная точно (pgfplots с настоящей формулой; касательные —
+% по вычисленной производной; сфера — полноценной сеткой). Ничего «на глаз». guide §3.
+\caption{TODO. Ссылка в тексте через \ref{fig:todo1}.}
+\label{fig:todo1}
+\end{figure}
+
+\section{TODO — раздел 2}
+\begin{theorem}[TODO — говорящее название]
+TODO — строгая формулировка.
+\end{theorem}
+
+\section{TODO — раздел 3}
+% TODO: ещё 1–2 содержательных раздела, в каждом теорема/определение + иллюстрация.
+
+\section{Обсуждение и ограничения}
+% TODO: 2–3 пункта, честно признающие, почему метод не работает (потеря информации
+% при свёртке, локальность, неустранимая корреляция). Финал: «это можно рассматривать
+% как единственный строгий результат работы».
+
+\section{Заключение}
+% TODO: коротко; последняя фраза — про «достаточное основание для дальнейшего
+% финансирования» или аналог.
+
+\section*{Вклад авторов}
+Р.\,Г.~Александров: концептуализация, методология, написание -- черновик.
+К.\,С.~Антропикович: программное обеспечение, визуализация, формальный анализ,
+написание -- рецензирование и редактирование, техническая поддержка бесконечного терпения.
+
+\section*{Финансирование}
+Исследование выполнено при поддержке гранта Института Прикладной Метафизики
+№ 2026-TODO-$\infty$ <<TODO — название гранта>>.
+
+\section*{Доступность данных}
+Данные доступны по обоснованному запросу -- а также по необоснованному, с той же
+вероятностью успеха.
+
+\begin{thebibliography}{9}
+% TODO: 2–3 вымышленных источника; фамилии авторов образованы от терминов этой статьи.
+\bibitem{todo1} TODO, Т.~Т. \textit{TODO.} Труды Института Прикладной Метафизики, б.г.
+\bibitem{todo2} TODO, Т.~Т. \textit{TODO.} Неопубликованная рукопись.
+\end{thebibliography}
+
+\noindent\textbf{Конфликт интересов.} Не заявлен, хотя, согласно Теореме~N,
+его отсутствие строго доказать невозможно.
+
+\end{document}

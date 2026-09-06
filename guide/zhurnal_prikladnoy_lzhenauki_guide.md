@@ -74,37 +74,31 @@
 % !TEX encoding = UTF-8
 ```
 Без этого при сборке через pdflatex по умолчанию (напр. в Overleaf) компиляция падает без PDF.
+Локально: `cd articles && latexmk` (настройки в `articles/.latexmkrc`). Новую статью начинать
+копией `articles/template.tex` — в ней уже расставлены разделы в порядке §2.
 
-**Преамбула — обязательные пакеты:**
+**Преамбула — не копируется вручную.** Вся фиксированная часть вынесена в пакет журнала
+`articles/zhpl.sty`; статья подключает его одной строкой:
 ```
-\usepackage{fontspec}
-\setmainfont{DejaVu Serif}
-\setsansfont{DejaVu Sans}
-\usepackage{polyglossia}
-\setdefaultlanguage{russian}
-
-\usepackage{amsmath,amssymb,amsthm}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,calc,positioning,decorations.markings,decorations.pathmorphing}
-\usepackage{pgfplots}
-\pgfplotsset{compat=1.18}
-
-\usepackage[margin=2.7cm]{geometry}
-\usepackage{caption}
-\usepackage{booktabs}
-\usepackage[hidelinks]{hyperref}
-\usepackage{fancyhdr}
-
-\newtheorem{theorem}{Теорема}
-\newtheorem{definition}{Определение}
+\documentclass[11pt,a4paper]{article}
+\usepackage{zhpl}
 ```
+Что внутри `zhpl.sty` (для справки): `fontspec` + DejaVu Serif/Sans, `polyglossia` (russian +
+english), `amsmath,amssymb,amsthm`, `tikz` с библиотеками
+`arrows.meta,calc,positioning,decorations.markings,decorations.pathmorphing`, `pgfplots`
+(`compat=1.18`, `fillbetween`), `geometry` (`margin=2.7cm`), `caption`, `booktabs`,
+`hyperref` (`hidelinks`), `fancyhdr`; окружения `theorem` («Теорема») и `definition`
+(«Определение»).
 
-**Колонтитулы (fancyhdr):** слева — фамилии авторов; справа — «Журнал Прикладной Лженауки, N(N), 20XX»; снизу по центру — номер страницы, справа — DOI.
-
-**Цветовая схема боксов** (все — `\fcolorbox{black}{<цвет>}{\begin{minipage}{0.94\linewidth}...\end{minipage}}`):
-- Highlights: `yellow!10`
-- Отзывы рецензентов: `gray!6`
-- Значимость исследования: `blue!4`
+**Макросы `zhpl.sty` вместо ручной «мебели»:**
+| Макрос | Назначение |
+|---|---|
+| `\zhplsetup{<выпуск>}{<DOI>}` | колонтитулы (слева — авторы; справа — «Журнал Прикладной Лженауки, 1(N), 2026»; снизу центр — страница, справа — DOI) и `\date` |
+| `\zhplauthors` | стандартный блок авторов и аффилиации; в статье — `\author{\zhplauthors}` |
+| `\zhplbadges` | два повёрнутых штампа под `\maketitle` |
+| `\zhplciteas{<текст>}` | центрированный блок «Как цитировать: …» |
+| `\zhplgraphicabstract{<tikz>}{<подпись>}` | графический реферат в `figure` с `\caption*` |
+| окружения `zhplhighlights` / `zhplreviews` / `zhplsignificance` | жёлтый (`yellow!10`), серый (`gray!6`) и синий (`blue!4`) боксы; содержимое пишется внутри, в highlights — плотный `itemize` |
 
 **Иллюстрации — обязательное правило точности.** Ничего не рисуется «на глаз»:
 - Касательные линии — считать реальную производную функции в точке и проводить линию по вычисленному наклону, а не произвольным смещением.
@@ -113,9 +107,10 @@
 - Каждая иллюстрация — отдельная `figure` с `\caption`, подписанная и подписанная в тексте через `\ref` или явный номер.
 
 **Проверка перед сдачей:**
-1. Скомпилировать `xelatex` дважды (для перекрёстных ссылок).
+1. `cd articles && latexmk` (latexmk сам делает нужное число проходов для перекрёстных ссылок).
 2. Проверить лог на `! ` (фатальные ошибки) и `Overfull \hbox` — если больше ~10pt, переформулировать фразу.
 3. Отрендерить каждую страницу в PNG и просмотреть визуально — формулы, рисунки и подписи не должны наезжать друг на друга или обрезаться.
+4. Обновить `articles/articles.json` и прогнать `python scripts/gen_site.py` — карточка статьи на сайте собирается из манифеста, вручную `index.html` не править.
 
 ---
 

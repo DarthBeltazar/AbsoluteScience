@@ -1,0 +1,109 @@
+% zhpl.sty — общий стиль «Журнала Прикладной Лженауки»
+%
+% Подключение:  \usepackage{zhpl}
+% Требует компиляции через XeLaTeX (см. articles/.latexmkrc).
+%
+% Здесь собрано всё, что руководство для авторов (guide/…guide.md, §3) фиксирует
+% как неизменное: преамбула, окружения теорем и «мебель» титульного блока
+% (штампы, «Как цитировать», графический реферат, три цветных бокса).
+% Научный текст статьи в шаблон не входит.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{zhpl}[2026/09/06 Zhurnal Prikladnoy Lzhenauki style]
+
+% ---------- Язык и шрифты ----------
+\RequirePackage{fontspec}
+\setmainfont{DejaVu Serif}
+\setsansfont{DejaVu Sans}
+\RequirePackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+% ---------- Математика ----------
+\RequirePackage{amsmath,amssymb,amsthm}
+
+% ---------- Графика ----------
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,decorations.markings,decorations.pathmorphing}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+
+% ---------- Оформление ----------
+\RequirePackage[margin=2.7cm]{geometry}
+\RequirePackage{caption}
+\RequirePackage{booktabs}
+\RequirePackage[hidelinks]{hyperref}
+\RequirePackage{fancyhdr}
+
+\newtheorem{theorem}{Теорема}
+\newtheorem{definition}{Определение}
+
+% ---------- Титульный аппарат ----------
+
+% Стандартный блок авторов (одинаков во всех статьях журнала).
+\newcommand{\zhplauthors}{%
+  Роман Георгиевич Александров, Клод Соннет Антропикович\\[4pt]
+  \normalsize Институт Прикладной Метафизики\\ \small Кафедра тензорного анализа межличностных отношений}
+
+% \zhplsetup{<номер выпуска>}{<DOI>} — колонтитулы и \date.
+% Пример: \zhplsetup{2}{10.9999/жпл.2026.0002}
+\newcommand{\zhplsetup}[2]{%
+  \pagestyle{fancy}%
+  \fancyhf{}%
+  \fancyhead[L]{\small Александров, Антропикович}%
+  \fancyhead[R]{\small Журнал Прикладной Лженауки, 1(#1), 2026}%
+  \renewcommand{\headrulewidth}{0.4pt}%
+  \fancyfoot[C]{\small\thepage}%
+  \fancyfoot[R]{\small DOI: #2}%
+  \date{\small Журнал Прикладной Лженауки, том 1, № #1 \\ Получено: недавно \quad Принято к печати: почти сразу}%
+}
+
+% Два повёрнутых штампа под \maketitle.
+\newcommand{\zhplbadges}{%
+  \begin{center}
+  \begin{tikzpicture}
+  \node[draw=red!70!black,very thick,rounded corners,rotate=-6,fill=red!5,inner sep=5pt] (badge1) {\color{red!70!black}\bfseries ПРОРЫВНОЕ ИССЛЕДОВАНИЕ};
+  \node[draw=blue!60!black,very thick,rounded corners,rotate=4,fill=blue!5,inner sep=5pt,right=1.0cm of badge1] (badge2) {\color{blue!60!black}\bfseries IMPACT FACTOR: $\infty$};
+  \end{tikzpicture}
+  \end{center}%
+}
+
+% \zhplciteas{Александров Р.\,Г., … DOI: 10.9999/жпл.20XX.000N}
+\newcommand{\zhplciteas}[1]{%
+  \begin{center}
+  \small\textit{Как цитировать:} #1
+  \end{center}%
+}
+
+% \zhplgraphicabstract{<тело tikzpicture>}{<текст подписи>}
+\newcommand{\zhplgraphicabstract}[2]{%
+  \smallskip
+  \begin{figure}[h!]
+  \centering
+  #1
+  \vspace{-6pt}
+  \caption*{\small\textbf{Графический реферат.} #2}
+  \end{figure}
+  \vspace{-10pt}%
+}
+
+% ---------- Три цветных бокса ----------
+% Внутрь помещается содержимое как есть (в highlights — плотный itemize).
+
+\newenvironment{zhplhighlights}
+  {\par\noindent\fcolorbox{black}{yellow!10}{\begin{minipage}{0.94\linewidth}%
+   \vspace{1pt}\small\textbf{Основные результаты}\par}
+  {\vspace{-6pt}\end{minipage}}\par}
+
+\newenvironment{zhplreviews}
+  {\vspace{4pt}\par\noindent\fcolorbox{black}{gray!6}{\begin{minipage}{0.94\linewidth}%
+   \small\textit{Из отзывов рецензентов:}\\}
+  {\end{minipage}}\par}
+
+\newenvironment{zhplsignificance}
+  {\vspace{10pt}\par\noindent\fcolorbox{black}{blue!4}{\begin{minipage}{0.94\linewidth}%
+   \textbf{Значимость исследования.} }
+  {\end{minipage}}\vspace{6pt}\par}
+
+\endinput

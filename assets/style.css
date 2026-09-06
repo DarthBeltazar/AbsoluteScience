@@ -12,8 +12,29 @@
   --green-bg:#e7f1ea;
   --yellow-bg:#fbf3d6;
   --gray-bg:#f0eee7;
+  --btn-fg:#faf6ee;           /* текст на залитой акцентом кнопке — не привязан к --paper */
+  --reader-bg:#ffffff;        /* подложка встроенного PDF — всегда белая */
   --serif: Georgia, "Times New Roman", "Liberation Serif", serif;
   --sans: "Trebuchet MS", "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#1c1a15;
+    --paper-2:#26231c;
+    --ink:#eae3d2;
+    --ink-soft:#b3a88f;
+    --rule:#3a352b;
+    --red:#e08a7f;
+    --red-bg:#3a2320;
+    --blue:#8fb4de;
+    --blue-bg:#1f2a38;
+    --green:#8fc2a3;
+    --green-bg:#1e2c23;
+    --yellow-bg:#332d18;
+    --gray-bg:#272420;
+    --btn-fg:#1c1a15;          /* тёмный текст на светлом акценте кнопки */
+  }
 }
 
 *{box-sizing:border-box;}
@@ -292,7 +313,7 @@ h2.section-title{
 
 .btn:hover{
   background:var(--blue);
-  color:var(--paper);
+  color:var(--btn-fg);
 }
 
 .btn.secondary{
@@ -301,20 +322,20 @@ h2.section-title{
 }
 .btn.secondary:hover{
   background:var(--ink-soft);
-  color:var(--paper);
+  color:var(--btn-fg);
   border-color:var(--ink-soft);
 }
 
 .btn.read-btn{
   background:var(--blue);
-  color:var(--paper);
+  color:var(--btn-fg);
   cursor:pointer;
   font-family:inherit;
 }
 .btn.read-btn:hover{
   background:var(--red);
   border-color:var(--red);
-  color:var(--paper);
+  color:var(--btn-fg);
 }
 
 .pdf-reader-wrap{
@@ -322,7 +343,7 @@ h2.section-title{
   border:1px solid var(--rule);
   border-radius:6px;
   overflow:hidden;
-  background:#fff;
+  background:var(--reader-bg);   /* PDF всегда на белом; в тёмной теме рамка отделяет его от страницы */
 }
 .pdf-reader-wrap[hidden]{display:none;}
 
@@ -366,4 +387,32 @@ footer a{color:var(--ink-soft);}
 @media (max-width:600px){
   .masthead-titles h1{font-size:1.6rem;}
   .article{padding:20px 18px;}
+}
+
+/* ---------- Print: чистое оглавление номера ---------- */
+
+@media print{
+  :root{
+    --paper:#fff; --paper-2:#fff;
+    --ink:#000; --ink-soft:#333; --rule:#bbb;
+  }
+  html,body{background:#fff;color:#000;}
+  nav.top-nav,
+  .badges,
+  .article-actions,
+  .pdf-reader-wrap{ display:none !important; }
+  header.masthead{ background:none; padding:12px 0; }
+  a{ color:#000; text-decoration:none; }
+  section{ margin-bottom:24px; }
+  .article,
+  .stat{
+    background:none;
+    border:0;
+    border-top:1px solid var(--rule);
+    border-radius:0;
+    padding:12px 0;
+  }
+  .highlights,
+  .cite-box{ background:none; border:0; padding-left:0; }
+  .article{ break-inside:avoid; }
 }
