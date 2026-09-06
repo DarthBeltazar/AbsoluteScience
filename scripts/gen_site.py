@@ -2,7 +2,9 @@
 """Пересобрать блок «Текущий номер» и счётчики в index.html из articles/articles.json.
 
 articles.json — единственный источник правды по метаданным статей. Сайт их больше
-не хранит вручную. Скрипт трогает только области между маркерами:
+не хранит вручную. Статья с "hidden": true пропускается: не попадает в карточки и
+в счётчик, но её .tex/.pdf остаются в репозитории и доступны по прямой ссылке.
+Скрипт трогает только области между маркерами:
 
     <!-- ARTICLES:START --> ... <!-- ARTICLES:END -->   — карточки статей
     <!-- STAT:articles --> ... <!-- /STAT:articles -->   — число опубликованных статей
@@ -104,10 +106,18 @@ def render_article(art: dict, n: int) -> str:
       </article>"""
 
 
+def visible_articles(manifest: dict) -> list[dict]:
+    """Статьи с "hidden": true пропускаются — файлы (.tex/.pdf) остаются в
+    репозитории и доступны по прямой ссылке, но не показываются на сайте и
+    не входят в счётчик "ОПУБЛИКОВАННЫЕ СТАТЬИ". Для черновиков/статей,
+    временно снятых с публикации."""
+    return [a for a in manifest["articles"] if not a.get("hidden")]
+
+
 def render_articles(manifest: dict) -> str:
     blocks = [
         render_article(art, i)
-        for i, art in enumerate(manifest["articles"], start=1)
+        for i, art in enumerate(visible_articles(manifest), start=1)
     ]
     return "\n\n".join(blocks)
 
@@ -137,7 +147,7 @@ def replace_region(text: str, name: str, inner: str, *, block: bool) -> str:
 def build(manifest: dict, current: str) -> str:
     out = replace_region(current, "ARTICLES", render_articles(manifest), block=True)
     out = replace_region(
-        out, "STAT:articles", str(len(manifest["articles"])), block=False
+        out, "STAT:articles", str(len(visible_articles(manifest))), block=False
     )
     journal = manifest.get("journal", {})
     if "volume" in journal:
@@ -170,7 +180,10 @@ def main() -> int:
         return 1
 
     INDEX.write_text(updated, encoding="utf-8")
-    print(f"index.html обновлён ({len(manifest['articles'])} статей)")
+    shown = len(visible_articles(manifest))
+    hidden = len(manifest["articles"]) - shown
+    note = f", скрыто {hidden}" if hidden else ""
+    print(f"index.html обновлён ({shown} статей{note})")
     return 0
 
 

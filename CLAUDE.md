@@ -29,6 +29,9 @@ humor comes from real, physically-meaningful math applied to a trivial subject.
   text here — only in `<slug>.tex`.
 - `articles/template.tex` — compilable skeleton in guide §2 order; copy it to start a new article.
 - `articles/articles.json` — **single source of truth** for article metadata shown on the site.
+  An entry with `"hidden": true` is skipped by the generator (excluded from `#issue` cards and
+  the article-count stat) while its `.tex`/`.pdf` stay in the repo and reachable by direct URL —
+  use this to unpublish/draft an article without deleting its files.
 - `articles/.latexmkrc` — makes `latexmk` use XeLaTeX and build both articles.
 - `scripts/gen_site.py` — regenerates the `#issue` cards and stat counters in `index.html` from
   `articles.json`; touches only the marked regions. `--check` fails if the file is out of date.
@@ -65,6 +68,9 @@ captions don't collide. Commit the regenerated `.pdf` with the source.
    abstract, highlights, keywords, citeHtml, doi).
 3. Run `python scripts/gen_site.py` (or `make site`) — it rebuilds the `#issue` cards, the
    `reader-N` ids, and the counters. Never hand-edit the generated regions of `index.html`.
+
+To pull a published article off the site without deleting anything, set `"hidden": true` on its
+`articles.json` entry and rerun `gen_site.py`; remove the field (or set `false`) to bring it back.
 
 ## Cross-article conventions (must stay consistent)
 

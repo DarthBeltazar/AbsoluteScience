@@ -42,6 +42,13 @@ make check      # проверить, что сайт синхронен с ма
 4. `python scripts/gen_site.py` — обновит карточки и счётчики в `index.html`.
    Размеченные `<!-- ARTICLES:START/END -->` и `<!-- STAT:… -->` области руками не трогать.
 
+## Как скрыть статью
+
+Добавить `"hidden": true` в объект статьи в `articles/articles.json` и прогнать
+`python scripts/gen_site.py`. Статья пропадёт из карточек и из счётчика на сайте, но `.tex`/`.pdf`
+остаются в репозитории и доступны по прямой ссылке. Чтобы вернуть — убрать поле (или `false`) и
+снова прогнать генератор.
+
 CI (`.github/workflows/build.yml`) собирает PDF на каждый push/PR, проверяет синхронность
 сайта и публикует его на GitHub Pages из ветки `main`. Для Pages в настройках репозитория
 должно быть выбрано **Settings → Pages → Source: GitHub Actions**.
