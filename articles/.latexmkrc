@@ -12,6 +12,7 @@ $xelatex  = 'xelatex -interaction=nonstopmode -halt-on-error -synctex=1 %O %S';
 # scaffold, not a publication. The .dark.tex wrappers reuse the main source.
 @default_files = (
   'tenzornaya_psikhometriya.tex', 'tenzornaya_psikhometriya.dark.tex',
+  'porokhovoy_paradoks_pwa.tex',  'porokhovoy_paradoks_pwa.dark.tex',
   'termodinamika_burmaldy.tex',   'termodinamika_burmaldy.dark.tex',
 );
 
