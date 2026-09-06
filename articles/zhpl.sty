@@ -49,6 +49,65 @@
 \newtheorem{theorem}{Теорема}
 \newtheorem{definition}{Определение}
 
+% ======================================================================
+%  Тёмный вариант: всё оформление собрано в одном условном блоке.
+%  Перекрашиваются только «оформительские» слои — фон страницы, текст,
+%  оси/подписи/сетка графиков, рамки таблиц, три цветных бокса.
+%  Цвета серий на графиках (blue/red/green) не трогаются.
+% ======================================================================
+\ifzhpl@dark
+  \RequirePackage{pagecolor}
+  \RequirePackage{colortbl}
+
+  \definecolor{zhplBg}{HTML}{1C1A15}
+  \definecolor{zhplFg}{HTML}{EAE3D2}
+  \definecolor{zhplMuted}{HTML}{B3A88F}
+  \definecolor{zhplRule}{HTML}{5A5344}
+  \definecolor{zhplBox}{HTML}{26231C}
+
+  % Цвета трёх боксов: тёмная заливка, светлая рамка, явный светлый текст
+  % (тинты yellow!10/gray!6/blue!4 на тёмном фоне нечитаемы).
+  \newcommand{\zhplbox@frame}{zhplMuted}
+  \newcommand{\zhplbox@hi}{zhplBox}
+  \newcommand{\zhplbox@rev}{zhplBox}
+  \newcommand{\zhplbox@sig}{zhplBox}
+  \newcommand{\zhplbox@fg}{\color{zhplFg}}
+
+  \pagecolor{zhplBg}
+  % Цвет текста по умолчанию + \normalcolor (minipage/tabular возвращают текст
+  % к \normalcolor через \@parboxrestore). Хук идёт после хука xcolor.
+  \AtBeginDocument{%
+    \color{zhplFg}%
+    \def\normalcolor{\color{zhplFg}}%
+  }
+
+  \renewcommand{\headrule}{\hbox to\headwidth{\color{zhplRule}%
+    \leaders\hrule height \headrulewidth\hfill}}
+  \arrayrulecolor{zhplRule}
+
+  \pgfplotsset{
+    every axis/.append style={
+      axis line style={zhplMuted},
+      tick style={zhplMuted},
+      label style={zhplFg},
+      tick label style={zhplFg},
+      title style={zhplFg},
+      legend style={fill=zhplBg,draw=zhplRule,text=zhplFg},
+      grid style={zhplRule},
+    },
+  }
+  \tikzset{
+    every picture/.append style={execute at begin picture={\color{zhplFg}}},
+    every node/.append style={text=zhplFg},
+  }
+\else
+  \newcommand{\zhplbox@frame}{black}
+  \newcommand{\zhplbox@hi}{yellow!10}
+  \newcommand{\zhplbox@rev}{gray!6}
+  \newcommand{\zhplbox@sig}{blue!4}
+  \newcommand{\zhplbox@fg}{}
+\fi
+
 % ---------- Титульный аппарат ----------
 
 % Стандартный блок авторов (одинаков во всех статьях журнала).
@@ -99,18 +158,9 @@
 }
 
 % ---------- Три цветных бокса ----------
-% Внутрь помещается содержимое как есть (в highlights — плотный itemize).
-% Цвета фона берутся из \zhplbox@hi / @rev / @sig — в тёмном варианте
-% переопределяются ниже.
-
-\newcommand{\zhplbox@frame}{black}
-\newcommand{\zhplbox@hi}{yellow!10}
-\newcommand{\zhplbox@rev}{gray!6}
-\newcommand{\zhplbox@sig}{blue!4}
-% Цвет текста внутри боксов: в светлом варианте — по умолчанию (чёрный), в тёмном
-% задаётся явно. Содержимое собирается в lrbox и лишь затем оборачивается
-% \fcolorbox — иначе \fcolorbox навязывает своему аргументу \normalcolor.
-\newcommand{\zhplbox@fg}{}
+% Содержимое собирается в lrbox и лишь затем оборачивается \fcolorbox — иначе
+% \fcolorbox навязывает своему аргументу \normalcolor. Цвета — из \zhplbox@*
+% (заданы выше в зависимости от опции [dark]).
 \newsavebox{\zhpl@boxbuf}
 
 \newenvironment{zhplhighlights}
@@ -130,64 +180,5 @@
    \zhplbox@fg\textbf{Значимость исследования.} }
   {\end{minipage}\end{lrbox}%
    \vspace{10pt}\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@sig}{\usebox{\zhpl@boxbuf}}\vspace{6pt}\par}
-
-% ---------- Тёмный вариант ----------
-% Идея: перекрасить только «оформительские» слои (фон страницы, текст, оси и
-% подписи графиков, рамки таблиц, три бокса). Цвета серий на графиках
-% (blue/red/green) достаточно насыщенные и остаются как есть.
-
-\ifzhpl@dark
-  \RequirePackage{pagecolor}
-
-  \definecolor{zhplBg}{HTML}{1C1A15}
-  \definecolor{zhplFg}{HTML}{EAE3D2}
-  \definecolor{zhplMuted}{HTML}{B3A88F}
-  \definecolor{zhplRule}{HTML}{5A5344}
-  \definecolor{zhplBox}{HTML}{26231C}
-
-  \pagecolor{zhplBg}
-  % Цвет текста по умолчанию. \normalcolor тоже переопределяем: minipage/tabular
-  % через \@parboxrestore возвращают текст к \normalcolor, иначе внутри трёх
-  % боксов он остался бы чёрным на тёмном фоне. Делается в хук-е \AtBeginDocument,
-  % который идёт после аналогичного хука xcolor (иначе xcolor вернёт чёрный).
-  \AtBeginDocument{%
-    \color{zhplFg}%
-    \def\normalcolor{\color{zhplFg}}%
-  }
-
-  % Колонтитулы и линия под шапкой
-  \renewcommand{\headrule}{\hbox to\headwidth{\color{zhplRule}\leaders\hrule height \headrulewidth\hfill}}
-
-  % Тонкие правила booktabs (\arrayrulecolor даёт colortbl)
-  \RequirePackage{colortbl}
-  \arrayrulecolor{zhplRule}
-
-  % Три бокса: тёмная заливка, светлая рамка (тинты в тёмной теме нечитаемы)
-  \renewcommand{\zhplbox@frame}{zhplMuted}
-  \renewcommand{\zhplbox@hi}{zhplBox}
-  \renewcommand{\zhplbox@rev}{zhplBox}
-  \renewcommand{\zhplbox@sig}{zhplBox}
-  \renewcommand{\zhplbox@fg}{\color{zhplFg}}
-
-  % pgfplots: оси, тики, подписи, легенда, сетка — светлые
-  \pgfplotsset{
-    every axis/.append style={
-      axis line style={zhplMuted},
-      tick style={zhplMuted},
-      label style={zhplFg},
-      tick label style={zhplFg},
-      title style={zhplFg},
-      legend style={fill=zhplBg,draw=zhplRule,text=zhplFg},
-      grid style={zhplRule},
-    },
-  }
-
-  % tikz-схемы: базовый цвет линий — светлый; текст узлов — светлый
-  % (узлы с собственным \color{...} внутри, напр. штампы, сохраняют свой цвет)
-  \tikzset{
-    every picture/.append style={execute at begin picture={\color{zhplFg}}},
-    every node/.append style={text=zhplFg},
-  }
-\fi
 
 \endinput
