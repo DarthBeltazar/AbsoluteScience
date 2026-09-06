@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Журнал Прикладной Лженауки</title>
-<meta name="description" content="Рецензируемое издание Института Прикладной Метафизики. Строгий аппарат точных наук, применённый к предельно бытовым темам.">
+<meta name="description" content="Журнал Прикладной Лженауки — рецензируемое периодическое издание Института Прикладной Метафизики, публикующее оригинальные исследования на стыке точных и гуманитарных наук.">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23faf6ee' stroke='%232a241c' stroke-width='5'/%3E%3Ctext x='50' y='62' font-size='42' text-anchor='middle' font-family='Georgia,serif' fill='%232a241c'%3E%CE%A3%3C/text%3E%3C/svg%3E">
 </head>
@@ -41,17 +41,16 @@
     <section id="about">
       <h2 class="section-title">О журнале</h2>
       <p class="about-lede">
-        <strong>Журнал Прикладной Лженауки</strong> переносит строгий аппарат точных
-        наук — тензорный анализ, общую теорию относительности, статистическую
-        термодинамику — на предельно бытовые и узнаваемые темы, сохраняя при этом
-        полную формальную строгость и абсолютно серьёзный академический тон.
-        Каждая статья настоящая ровно наполовину: математика в ней подлинная
-        и проверяемая, а предмет исследования — нет.
+        <strong>Журнал Прикладной Лженауки</strong> — рецензируемое научное издание
+        Института Прикладной Метафизики. Журнал публикует оригинальные
+        исследования, применяющие формальный аппарат точных наук к широкому
+        кругу прикладных задач, а также методологические и обзорные работы в
+        этой области. Редакционная политика журнала следует общепринятым
+        стандартам научного рецензирования и открытого доступа к публикуемым
+        материалам.
       </p>
       <blockquote class="motto">
-        Смешно ровно потому, что несмешно: ни одна статья журнала не
-        подмигивает читателю иронией и не выходит из образа от первой
-        строки до последней.
+        Строгость метода не зависит от природы объекта, к которому он применяется.
       </blockquote>
 
       <div class="stat-row">
@@ -108,8 +107,14 @@
         </div>
 
         <div class="article-actions">
-          <a class="btn" href="articles/tenzornaya_psikhometriya.pdf">Скачать PDF</a>
+          <button type="button" class="btn read-btn" onclick="toggleReader(this, 'reader-1')">Читать на сайте</button>
+          <a class="btn secondary" href="articles/tenzornaya_psikhometriya.pdf">Скачать PDF</a>
           <a class="btn secondary" href="articles/tenzornaya_psikhometriya.tex">Исходник (.tex)</a>
+        </div>
+
+        <div class="pdf-reader-wrap" id="reader-1-wrap" hidden>
+          <iframe id="reader-1" class="pdf-reader" data-src="articles/tenzornaya_psikhometriya.pdf"
+                  title="К обоснованию тензорного анализа личности — полный текст"></iframe>
         </div>
       </article>
 
@@ -154,8 +159,14 @@
         </div>
 
         <div class="article-actions">
-          <a class="btn" href="articles/termodinamika_burmaldy.pdf">Скачать PDF</a>
+          <button type="button" class="btn read-btn" onclick="toggleReader(this, 'reader-2')">Читать на сайте</button>
+          <a class="btn secondary" href="articles/termodinamika_burmaldy.pdf">Скачать PDF</a>
           <a class="btn secondary" href="articles/termodinamika_burmaldy.tex">Исходник (.tex)</a>
+        </div>
+
+        <div class="pdf-reader-wrap" id="reader-2-wrap" hidden>
+          <iframe id="reader-2" class="pdf-reader" data-src="articles/termodinamika_burmaldy.pdf"
+                  title="К термодинамическому обоснованию бурмалды — полный текст"></iframe>
         </div>
       </article>
     </section>
@@ -199,5 +210,23 @@
   </div>
 </footer>
 
+<script>
+function toggleReader(btn, id) {
+  var wrap = document.getElementById(id + '-wrap');
+  var frame = document.getElementById(id);
+  var opening = wrap.hasAttribute('hidden');
+  if (opening) {
+    if (!frame.getAttribute('src')) {
+      frame.setAttribute('src', frame.getAttribute('data-src'));
+    }
+    wrap.removeAttribute('hidden');
+    btn.textContent = 'Свернуть статью';
+    wrap.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+  } else {
+    wrap.setAttribute('hidden', '');
+    btn.textContent = 'Читать на сайте';
+  }
+}
+</script>
 </body>
 </html>
