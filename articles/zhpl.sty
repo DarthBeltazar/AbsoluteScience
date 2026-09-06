@@ -143,7 +143,8 @@
   % Колонтитулы и линия под шапкой
   \renewcommand{\headrule}{\hbox to\headwidth{\color{zhplRule}\leaders\hrule height \headrulewidth\hfill}}
 
-  % Тонкие правила booktabs
+  % Тонкие правила booktabs (\arrayrulecolor даёт colortbl)
+  \RequirePackage{colortbl}
   \arrayrulecolor{zhplRule}
 
   % Три бокса: тёмная заливка, светлая рамка (тинты в тёмной теме нечитаемы)
