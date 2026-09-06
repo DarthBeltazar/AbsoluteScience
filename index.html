@@ -20,14 +20,18 @@
 <meta name="theme-color" content="#1c1a15" media="(prefers-color-scheme: dark)">
 
 <link rel="stylesheet" href="assets/style.css">
-<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark-dark.svg" media="(prefers-color-scheme: dark)">
 </head>
 <body>
 
 <header class="masthead">
   <div class="wrap">
     <div class="masthead-top">
-      <img class="seal" src="assets/logo-seal.svg" alt="Печать журнала: Журнал Прикладной Лженауки, Институт Прикладной Метафизики" width="86" height="86">
+      <picture class="seal">
+        <source srcset="assets/logo-seal-dark.svg" media="(prefers-color-scheme: dark)">
+        <img src="assets/logo-seal.svg" alt="Печать журнала: Журнал Прикладной Лженауки, Институт Прикладной Метафизики" width="86" height="86">
+      </picture>
       <div class="masthead-titles">
         <h1>Журнал Прикладной Лженауки</h1>
         <p class="affil">Институт Прикладной Метафизики · Кафедра тензорного анализа межличностных отношений</p>
