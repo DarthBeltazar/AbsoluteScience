@@ -138,7 +138,14 @@
   \definecolor{zhplBox}{HTML}{26231C}
 
   \pagecolor{zhplBg}
-  \AtBeginDocument{\color{zhplFg}}
+  % Цвет текста по умолчанию. \normalcolor тоже переопределяем: minipage/tabular
+  % через \@parboxrestore возвращают текст к \normalcolor, иначе внутри трёх
+  % боксов он остался бы чёрным на тёмном фоне. Делается в хук-е \AtBeginDocument,
+  % который идёт после аналогичного хука xcolor (иначе xcolor вернёт чёрный).
+  \AtBeginDocument{%
+    \color{zhplFg}%
+    \def\normalcolor{\color{zhplFg}}%
+  }
 
   % Колонтитулы и линия под шапкой
   \renewcommand{\headrule}{\hbox to\headwidth{\color{zhplRule}\leaders\hrule height \headrulewidth\hfill}}
