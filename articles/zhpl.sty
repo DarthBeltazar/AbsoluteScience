@@ -107,20 +107,23 @@
 \newcommand{\zhplbox@hi}{yellow!10}
 \newcommand{\zhplbox@rev}{gray!6}
 \newcommand{\zhplbox@sig}{blue!4}
+% Цвет текста внутри боксов: в светлом варианте — по умолчанию (чёрный), в тёмном
+% задаётся явно, т.к. minipage сбрасывает цвет через \@parboxrestore/\normalcolor.
+\newcommand{\zhplbox@fg}{}
 
 \newenvironment{zhplhighlights}
   {\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@hi}{\begin{minipage}{0.94\linewidth}%
-   \vspace{1pt}\small\textbf{Основные результаты}\par}
+   \zhplbox@fg\vspace{1pt}\small\textbf{Основные результаты}\par}
   {\vspace{-6pt}\end{minipage}}\par}
 
 \newenvironment{zhplreviews}
   {\vspace{4pt}\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@rev}{\begin{minipage}{0.94\linewidth}%
-   \small\textit{Из отзывов рецензентов:}\\}
+   \zhplbox@fg\small\textit{Из отзывов рецензентов:}\\}
   {\end{minipage}}\par}
 
 \newenvironment{zhplsignificance}
   {\vspace{10pt}\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@sig}{\begin{minipage}{0.94\linewidth}%
-   \textbf{Значимость исследования.} }
+   \zhplbox@fg\textbf{Значимость исследования.} }
   {\end{minipage}}\vspace{6pt}\par}
 
 % ---------- Тёмный вариант ----------
@@ -159,6 +162,7 @@
   \renewcommand{\zhplbox@hi}{zhplBox}
   \renewcommand{\zhplbox@rev}{zhplBox}
   \renewcommand{\zhplbox@sig}{zhplBox}
+  \renewcommand{\zhplbox@fg}{\color{zhplFg}}
 
   % pgfplots: оси, тики, подписи, легенда, сетка — светлые
   \pgfplotsset{
@@ -173,9 +177,12 @@
     },
   }
 
-  % tikz-схемы: базовый цвет линий и текста узлов — светлый
-  % (узлы с явным fill=... сохраняют заливку)
-  \tikzset{every picture/.append style={execute at begin picture={\color{zhplFg}}}}
+  % tikz-схемы: базовый цвет линий — светлый; текст узлов — светлый
+  % (узлы с собственным \color{...} внутри, напр. штампы, сохраняют свой цвет)
+  \tikzset{
+    every picture/.append style={execute at begin picture={\color{zhplFg}}},
+    every node/.append style={text=zhplFg},
+  }
 \fi
 
 \endinput
