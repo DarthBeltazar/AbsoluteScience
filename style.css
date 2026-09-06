@@ -1,0 +1,340 @@
+:root{
+  --paper:#faf6ee;
+  --paper-2:#f2ecdd;
+  --ink:#2a241c;
+  --ink-soft:#5b5344;
+  --rule:#d8cdb4;
+  --red:#8c2f2f;
+  --red-bg:#f7e9e6;
+  --blue:#2c4a73;
+  --blue-bg:#e9eff6;
+  --green:#3c6b4f;
+  --green-bg:#e7f1ea;
+  --yellow-bg:#fbf3d6;
+  --gray-bg:#f0eee7;
+  --serif: Georgia, "Times New Roman", "Liberation Serif", serif;
+  --sans: "Trebuchet MS", "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+*{box-sizing:border-box;}
+
+html{background:var(--paper);}
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--serif);
+  line-height:1.55;
+}
+
+a{color:var(--blue);}
+a:hover{color:var(--red);}
+
+.wrap{
+  max-width:880px;
+  margin:0 auto;
+  padding:0 24px;
+}
+
+/* ---------- Masthead ---------- */
+
+header.masthead{
+  border-bottom:3px double var(--ink);
+  background:linear-gradient(180deg, var(--paper-2), var(--paper));
+  padding:38px 0 26px;
+}
+
+.masthead-top{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.seal{
+  flex:0 0 auto;
+  width:74px;
+  height:74px;
+  border-radius:50%;
+  border:2px solid var(--ink);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-family:var(--sans);
+  font-size:0.62rem;
+  letter-spacing:0.05em;
+  color:var(--ink-soft);
+  background:
+    radial-gradient(circle at 50% 50%, transparent 58%, var(--rule) 59%, var(--rule) 61%, transparent 62%),
+    var(--paper);
+  padding:6px;
+}
+
+.masthead-titles h1{
+  font-size:2.15rem;
+  margin:0 0 4px;
+  letter-spacing:0.01em;
+}
+
+.masthead-titles .affil{
+  margin:0;
+  font-family:var(--sans);
+  font-size:0.86rem;
+  color:var(--ink-soft);
+}
+
+.badges{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:18px;
+  font-family:var(--sans);
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 11px;
+  border-radius:3px;
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:0.03em;
+  border:1.5px solid currentColor;
+}
+
+.badge.red{ color:var(--red); background:var(--red-bg); }
+.badge.blue{ color:var(--blue); background:var(--blue-bg); }
+.badge.green{ color:var(--green); background:var(--green-bg); }
+
+nav.top-nav{
+  font-family:var(--sans);
+  font-size:0.85rem;
+  margin-top:22px;
+  padding-top:14px;
+  border-top:1px solid var(--rule);
+  display:flex;
+  gap:22px;
+  flex-wrap:wrap;
+}
+
+nav.top-nav a{
+  text-decoration:none;
+  color:var(--ink);
+  border-bottom:1px solid transparent;
+}
+nav.top-nav a:hover{
+  color:var(--red);
+  border-bottom-color:var(--red);
+}
+
+/* ---------- Sections ---------- */
+
+main{padding:40px 0 20px;}
+
+section{margin-bottom:52px;}
+
+h2.section-title{
+  font-size:1.3rem;
+  border-bottom:1px solid var(--ink);
+  padding-bottom:8px;
+  margin:0 0 20px;
+}
+
+.about-lede{
+  font-size:1.05rem;
+}
+
+.about-lede em{font-style:italic;}
+
+.stat-row{
+  display:flex;
+  gap:28px;
+  flex-wrap:wrap;
+  margin-top:22px;
+  font-family:var(--sans);
+}
+
+.stat{
+  background:var(--paper-2);
+  border:1px solid var(--rule);
+  border-radius:6px;
+  padding:12px 18px;
+  min-width:140px;
+}
+
+.stat .num{
+  display:block;
+  font-family:var(--serif);
+  font-size:1.5rem;
+  font-weight:700;
+  color:var(--blue);
+}
+
+.stat .label{
+  font-size:0.72rem;
+  color:var(--ink-soft);
+  letter-spacing:0.03em;
+}
+
+/* ---------- Article cards ---------- */
+
+.issue-heading{
+  font-family:var(--sans);
+  font-size:0.85rem;
+  color:var(--ink-soft);
+  margin:0 0 18px;
+  letter-spacing:0.03em;
+}
+
+.article{
+  border:1px solid var(--rule);
+  border-radius:8px;
+  background:var(--paper-2);
+  padding:26px 28px;
+  margin-bottom:26px;
+}
+
+.article + .article{margin-top:0;}
+
+.article-kicker{
+  font-family:var(--sans);
+  font-size:0.72rem;
+  color:var(--ink-soft);
+  letter-spacing:0.04em;
+  margin-bottom:6px;
+}
+
+.article h3{
+  margin:0 0 6px;
+  font-size:1.32rem;
+  line-height:1.35;
+}
+
+.article .authors{
+  font-family:var(--sans);
+  font-size:0.86rem;
+  color:var(--ink-soft);
+  margin:0 0 16px;
+}
+
+.article .abstract{
+  font-size:0.98rem;
+  margin:0 0 16px;
+}
+
+.article .abstract-label{
+  font-family:var(--sans);
+  font-weight:700;
+  font-size:0.72rem;
+  letter-spacing:0.05em;
+  color:var(--ink-soft);
+  display:block;
+  margin-bottom:4px;
+}
+
+.highlights{
+  background:var(--yellow-bg);
+  border:1px solid #e2d18e;
+  border-radius:6px;
+  padding:14px 18px 14px 32px;
+  margin:0 0 16px;
+  font-size:0.92rem;
+}
+
+.highlights li{margin-bottom:4px;}
+
+.keywords{
+  font-family:var(--sans);
+  font-size:0.8rem;
+  color:var(--ink-soft);
+  margin:0 0 16px;
+}
+
+.keywords .kw{
+  display:inline-block;
+  background:var(--gray-bg);
+  border:1px solid var(--rule);
+  border-radius:20px;
+  padding:2px 11px;
+  margin:0 6px 6px 0;
+}
+
+.cite-box{
+  font-family:var(--sans);
+  font-size:0.78rem;
+  color:var(--ink-soft);
+  background:var(--paper);
+  border-left:3px solid var(--blue);
+  padding:10px 14px;
+  margin:0 0 18px;
+}
+
+.cite-box .doi{display:block; margin-top:4px;}
+
+.article-actions{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  font-family:var(--sans);
+  font-size:0.88rem;
+}
+
+.btn{
+  display:inline-block;
+  padding:8px 16px;
+  border-radius:5px;
+  text-decoration:none;
+  font-weight:700;
+  border:1.5px solid var(--blue);
+  color:var(--blue);
+}
+
+.btn:hover{
+  background:var(--blue);
+  color:var(--paper);
+}
+
+.btn.secondary{
+  border-color:var(--rule);
+  color:var(--ink-soft);
+}
+.btn.secondary:hover{
+  background:var(--ink-soft);
+  color:var(--paper);
+  border-color:var(--ink-soft);
+}
+
+/* ---------- For authors ---------- */
+
+.checklist{
+  padding-left:22px;
+}
+.checklist li{margin-bottom:8px;}
+
+blockquote.motto{
+  font-style:italic;
+  color:var(--ink-soft);
+  border-left:3px solid var(--rule);
+  padding-left:16px;
+  margin:24px 0;
+}
+
+/* ---------- Footer ---------- */
+
+footer{
+  border-top:3px double var(--ink);
+  padding:24px 0 40px;
+  font-family:var(--sans);
+  font-size:0.78rem;
+  color:var(--ink-soft);
+}
+
+footer p{margin:4px 0;}
+
+footer a{color:var(--ink-soft);}
+
+@media (max-width:600px){
+  .masthead-titles h1{font-size:1.6rem;}
+  .article{padding:20px 18px;}
+}
