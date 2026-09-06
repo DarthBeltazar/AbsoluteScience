@@ -63,14 +63,14 @@
   \definecolor{zhplFg}{HTML}{EAE3D2}
   \definecolor{zhplMuted}{HTML}{B3A88F}
   \definecolor{zhplRule}{HTML}{5A5344}
-  \definecolor{zhplBox}{HTML}{26231C}
 
   % Цвета трёх боксов: тёмная заливка, светлая рамка, явный светлый текст
-  % (тинты yellow!10/gray!6/blue!4 на тёмном фоне нечитаемы).
+  % (тинты yellow!10/gray!6/blue!4 на тёмном фоне нечитаемы). Выражения
+  % black!NN, а не именованный цвет — так надёжнее в \colorbox.
   \newcommand{\zhplbox@frame}{zhplMuted}
-  \newcommand{\zhplbox@hi}{zhplBox}
-  \newcommand{\zhplbox@rev}{zhplBox}
-  \newcommand{\zhplbox@sig}{zhplBox}
+  \newcommand{\zhplbox@hi}{black!88}
+  \newcommand{\zhplbox@rev}{black!88}
+  \newcommand{\zhplbox@sig}{black!88}
   \newcommand{\zhplbox@fg}{\color{zhplFg}}
 
   \pagecolor{zhplBg}
@@ -158,31 +158,34 @@
 }
 
 % ---------- Три цветных бокса ----------
-% Содержимое собирается в lrbox и лишь затем оборачивается \fcolorbox — иначе
-% \fcolorbox навязывает своему аргументу \normalcolor. Цвета — из \zhplbox@*
-% (заданы выше в зависимости от опции [dark]).
+% Содержимое собирается в lrbox и лишь затем заливается — так \fcolorbox/\colorbox
+% не навязывают содержимому \normalcolor. Заливка и рамка рисуются вручную
+% (\zhpl@framed), чтобы не зависеть от разбора аргументов \fcolorbox.
 \newsavebox{\zhpl@boxbuf}
+
+% \zhpl@framed{<цвет рамки>}{<цвет заливки>}{<бокс-контент>}
+\newcommand{\zhpl@framed}[3]{%
+  \par\noindent
+  \setlength{\fboxsep}{6pt}%
+  {\color{#1}\fbox{\colorbox{#2}{#3}}}%
+  \par}
 
 \newenvironment{zhplhighlights}
   {\begin{lrbox}{\zhpl@boxbuf}\begin{minipage}{0.94\linewidth}%
    \zhplbox@fg\vspace{1pt}\small\textbf{Основные результаты}\par}
   {\vspace{-6pt}\end{minipage}\end{lrbox}%
-   \par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@hi}{\usebox{\zhpl@boxbuf}}\par}
+   \zhpl@framed{\zhplbox@frame}{\zhplbox@hi}{\usebox{\zhpl@boxbuf}}}
 
 \newenvironment{zhplreviews}
   {\begin{lrbox}{\zhpl@boxbuf}\begin{minipage}{0.94\linewidth}%
    \zhplbox@fg\small\textit{Из отзывов рецензентов:}\\}
   {\end{minipage}\end{lrbox}%
-   \vspace{4pt}\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@rev}{\usebox{\zhpl@boxbuf}}\par}
+   \vspace{4pt}\zhpl@framed{\zhplbox@frame}{\zhplbox@rev}{\usebox{\zhpl@boxbuf}}}
 
 \newenvironment{zhplsignificance}
   {\begin{lrbox}{\zhpl@boxbuf}\begin{minipage}{0.94\linewidth}%
    \zhplbox@fg\textbf{Значимость исследования.} }
   {\end{minipage}\end{lrbox}%
-   \vspace{10pt}\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@sig}{\usebox{\zhpl@boxbuf}}\vspace{6pt}\par}
-
-\typeout{ZHPLDIAG dark=\ifzhpl@dark TRUE\else FALSE\fi
-  ^^J  frame=\meaning\zhplbox@hi
-  ^^J  hi=\meaning\zhplbox@hi rev=\meaning\zhplbox@rev fg=\meaning\zhplbox@fg}
+   \vspace{10pt}\zhpl@framed{\zhplbox@frame}{\zhplbox@sig}{\usebox{\zhpl@boxbuf}}\vspace{6pt}}
 
 \endinput
