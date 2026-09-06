@@ -5,15 +5,15 @@
   <path id="topArc" d="M 21 120 A 99 99 0 0 1 219 120" fill="none"/>
   <path id="botArc" d="M 219 120 A 99 99 0 0 1 21 120" fill="none"/>
 
-  <text font-family="Georgia, 'Times New Roman', serif" font-size="16"
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="16" dominant-baseline="central"
         letter-spacing="1" fill="#2a241c">
     <textPath href="#topArc" startOffset="50%" text-anchor="middle"
-              textLength="300" lengthAdjust="spacing">ЖУРНАЛ ПРИКЛАДНОЙ ЛЖЕНАУКИ</textPath>
+              textLength="260" lengthAdjust="spacing">ЖУРНАЛ ПРИКЛАДНОЙ ЛЖЕНАУКИ</textPath>
   </text>
-  <text font-family="Georgia, 'Times New Roman', serif" font-size="16"
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="16" dominant-baseline="central"
         letter-spacing="1" fill="#2a241c">
     <textPath href="#botArc" startOffset="50%" text-anchor="middle"
-              textLength="300" lengthAdjust="spacing">ИНСТИТУТ ПРИКЛАДНОЙ МЕТАФИЗИКИ</textPath>
+              textLength="260" lengthAdjust="spacing">ИНСТИТУТ ПРИКЛАДНОЙ МЕТАФИЗИКИ</textPath>
   </text>
 
   <circle cx="21" cy="120" r="2" fill="#2a241c"/>
