@@ -20,7 +20,9 @@ jobs:
           working_directory: articles
           root_file: |
             tenzornaya_psikhometriya.tex
+            tenzornaya_psikhometriya.dark.tex
             termodinamika_burmaldy.tex
+            termodinamika_burmaldy.dark.tex
           latexmk_use_xelatex: true
 
       - name: Check index.html is in sync with articles/articles.json

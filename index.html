@@ -120,7 +120,8 @@
             <button type="button" class="pdf-dark-btn" aria-pressed="false" onclick="togglePdfDark()">Тёмный PDF</button>
             <a class="pdf-reader-link" href="articles/tenzornaya_psikhometriya.pdf#view=FitH" target="_blank" rel="noopener">Открыть отдельно ↗</a>
           </div>
-          <iframe id="reader-1" class="pdf-reader" data-src="articles/tenzornaya_psikhometriya.pdf#view=FitH"
+          <iframe id="reader-1" class="pdf-reader"
+                  data-src="articles/tenzornaya_psikhometriya.pdf#view=FitH" data-dark-src="articles/tenzornaya_psikhometriya.dark.pdf#view=FitH"
                   title="К обоснованию тензорного анализа личности — полный текст"></iframe>
         </div>
       </article>
@@ -166,7 +167,8 @@
             <button type="button" class="pdf-dark-btn" aria-pressed="false" onclick="togglePdfDark()">Тёмный PDF</button>
             <a class="pdf-reader-link" href="articles/termodinamika_burmaldy.pdf#view=FitH" target="_blank" rel="noopener">Открыть отдельно ↗</a>
           </div>
-          <iframe id="reader-2" class="pdf-reader" data-src="articles/termodinamika_burmaldy.pdf#view=FitH"
+          <iframe id="reader-2" class="pdf-reader"
+                  data-src="articles/termodinamika_burmaldy.pdf#view=FitH" data-dark-src="articles/termodinamika_burmaldy.dark.pdf#view=FitH"
                   title="К термодинамическому обоснованию бурмалды — полный текст"></iframe>
         </div>
       </article>
@@ -230,9 +232,22 @@
     var s = stored();
     return s === null ? prefersDark() : s === '1';
   }
+  // Для каждой статьи есть два PDF: обычный (data-src) и тёмный (data-dark-src).
+  function readerSrc(frame, on) {
+    return on ? frame.getAttribute('data-dark-src') : frame.getAttribute('data-src');
+  }
   function applyPdfDark(on) {
     var frames = document.querySelectorAll('.pdf-reader');
-    for (var i = 0; i < frames.length; i++) frames[i].classList.toggle('pdf-dark', on);
+    for (var i = 0; i < frames.length; i++) {
+      var f = frames[i];
+      var want = readerSrc(f, on);
+      if (f.getAttribute('src') && f.getAttribute('src') !== want) {
+        f.setAttribute('src', want);            // читалка уже открыта — перегружаем нужный вариант
+      }
+      var wrap = f.closest ? f.closest('.pdf-reader-wrap') : null;
+      var link = wrap && wrap.querySelector('.pdf-reader-link');
+      if (link) link.setAttribute('href', want);
+    }
     var btns = document.querySelectorAll('.pdf-dark-btn');
     for (var j = 0; j < btns.length; j++) {
       btns[j].textContent = on ? 'Обычный PDF' : 'Тёмный PDF';
@@ -252,7 +267,7 @@
     var opening = wrap.hasAttribute('hidden');
     if (opening) {
       if (!frame.getAttribute('src')) {
-        frame.setAttribute('src', frame.getAttribute('data-src'));
+        frame.setAttribute('src', readerSrc(frame, pdfDarkOn()));
       }
       applyPdfDark(pdfDarkOn());
       wrap.hidden = false;

@@ -53,6 +53,7 @@ def render_article(art: dict, n: int) -> str:
     reader_name = html.escape(short)
     iframe_title = html.escape(f"{short} — полный текст")
     pdf_view = f"{pdf}#view=FitH"  # открывать по ширине страницы
+    pdf_dark_view = f"articles/{art_id}.dark.pdf#view=FitH"  # тёмный вариант
 
     highlights = "\n".join(
         f"          <li>{h}</li>" for h in art["highlights"]  # <em>/<sub> допускаются
@@ -96,7 +97,8 @@ def render_article(art: dict, n: int) -> str:
             <button type="button" class="pdf-dark-btn" aria-pressed="false" onclick="togglePdfDark()">Тёмный PDF</button>
             <a class="pdf-reader-link" href="{pdf_view}" target="_blank" rel="noopener">Открыть отдельно ↗</a>
           </div>
-          <iframe id="{reader}" class="pdf-reader" data-src="{pdf_view}"
+          <iframe id="{reader}" class="pdf-reader"
+                  data-src="{pdf_view}" data-dark-src="{pdf_dark_view}"
                   title="{iframe_title}"></iframe>
         </div>
       </article>"""

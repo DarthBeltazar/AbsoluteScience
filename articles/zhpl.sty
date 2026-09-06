@@ -1,15 +1,24 @@
 % zhpl.sty — общий стиль «Журнала Прикладной Лженауки»
 %
-% Подключение:  \usepackage{zhpl}
+% Подключение:  \usepackage{zhpl}          — обычный (светлый) вариант
+%               \usepackage[dark]{zhpl}     — тёмный вариант для чтения на сайте
 % Требует компиляции через XeLaTeX (см. articles/.latexmkrc).
 %
 % Здесь собрано всё, что руководство для авторов (guide/…guide.md, §3) фиксирует
 % как неизменное: преамбула, окружения теорем и «мебель» титульного блока
 % (штампы, «Как цитировать», графический реферат, три цветных бокса).
 % Научный текст статьи в шаблон не входит.
+%
+% Тёмный вариант обычно собирается не напрямую, а через тонкую обёртку
+% <slug>.dark.tex (\PassOptionsToPackage{dark}{zhpl} + \input{<slug>}).
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{zhpl}[2026/09/06 Zhurnal Prikladnoy Lzhenauki style]
+\ProvidesPackage{zhpl}[2026/09/07 Zhurnal Prikladnoy Lzhenauki style]
+
+\newif\ifzhpl@dark
+\DeclareOption{dark}{\zhpl@darktrue}
+\DeclareOption*{}
+\ProcessOptions\relax
 
 % ---------- Язык и шрифты ----------
 \RequirePackage{fontspec}
@@ -23,6 +32,7 @@
 \RequirePackage{amsmath,amssymb,amsthm}
 
 % ---------- Графика ----------
+\RequirePackage{xcolor}
 \RequirePackage{tikz}
 \usetikzlibrary{arrows.meta,calc,positioning,decorations.markings,decorations.pathmorphing}
 \RequirePackage{pgfplots}
@@ -90,20 +100,74 @@
 
 % ---------- Три цветных бокса ----------
 % Внутрь помещается содержимое как есть (в highlights — плотный itemize).
+% Цвета фона берутся из \zhplbox@hi / @rev / @sig — в тёмном варианте
+% переопределяются ниже.
+
+\newcommand{\zhplbox@frame}{black}
+\newcommand{\zhplbox@hi}{yellow!10}
+\newcommand{\zhplbox@rev}{gray!6}
+\newcommand{\zhplbox@sig}{blue!4}
 
 \newenvironment{zhplhighlights}
-  {\par\noindent\fcolorbox{black}{yellow!10}{\begin{minipage}{0.94\linewidth}%
+  {\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@hi}{\begin{minipage}{0.94\linewidth}%
    \vspace{1pt}\small\textbf{Основные результаты}\par}
   {\vspace{-6pt}\end{minipage}}\par}
 
 \newenvironment{zhplreviews}
-  {\vspace{4pt}\par\noindent\fcolorbox{black}{gray!6}{\begin{minipage}{0.94\linewidth}%
+  {\vspace{4pt}\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@rev}{\begin{minipage}{0.94\linewidth}%
    \small\textit{Из отзывов рецензентов:}\\}
   {\end{minipage}}\par}
 
 \newenvironment{zhplsignificance}
-  {\vspace{10pt}\par\noindent\fcolorbox{black}{blue!4}{\begin{minipage}{0.94\linewidth}%
+  {\vspace{10pt}\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@sig}{\begin{minipage}{0.94\linewidth}%
    \textbf{Значимость исследования.} }
   {\end{minipage}}\vspace{6pt}\par}
+
+% ---------- Тёмный вариант ----------
+% Идея: перекрасить только «оформительские» слои (фон страницы, текст, оси и
+% подписи графиков, рамки таблиц, три бокса). Цвета серий на графиках
+% (blue/red/green) достаточно насыщенные и остаются как есть.
+
+\ifzhpl@dark
+  \RequirePackage{pagecolor}
+
+  \definecolor{zhplBg}{HTML}{1C1A15}
+  \definecolor{zhplFg}{HTML}{EAE3D2}
+  \definecolor{zhplMuted}{HTML}{B3A88F}
+  \definecolor{zhplRule}{HTML}{5A5344}
+  \definecolor{zhplBox}{HTML}{26231C}
+
+  \pagecolor{zhplBg}
+  \AtBeginDocument{\color{zhplFg}}
+
+  % Колонтитулы и линия под шапкой
+  \renewcommand{\headrule}{\hbox to\headwidth{\color{zhplRule}\leaders\hrule height \headrulewidth\hfill}}
+
+  % Тонкие правила booktabs
+  \arrayrulecolor{zhplRule}
+
+  % Три бокса: тёмная заливка, светлая рамка (тинты в тёмной теме нечитаемы)
+  \renewcommand{\zhplbox@frame}{zhplMuted}
+  \renewcommand{\zhplbox@hi}{zhplBox}
+  \renewcommand{\zhplbox@rev}{zhplBox}
+  \renewcommand{\zhplbox@sig}{zhplBox}
+
+  % pgfplots: оси, тики, подписи, легенда, сетка — светлые
+  \pgfplotsset{
+    every axis/.append style={
+      axis line style={zhplMuted},
+      tick style={zhplMuted},
+      label style={zhplFg},
+      tick label style={zhplFg},
+      title style={zhplFg},
+      legend style={fill=zhplBg,draw=zhplRule,text=zhplFg},
+      grid style={zhplRule},
+    },
+  }
+
+  % tikz-схемы: базовый цвет линий и текста узлов — светлый
+  % (узлы с явным fill=... сохраняют заливку)
+  \tikzset{every picture/.append style={execute at begin picture={\color{zhplFg}}}}
+\fi
 
 \endinput

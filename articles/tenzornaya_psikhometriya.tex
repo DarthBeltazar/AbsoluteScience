@@ -2,45 +2,12 @@
 % !TEX encoding = UTF-8
 \documentclass[11pt,a4paper]{article}
 
-% ---------- Язык и шрифты ----------
-\usepackage{fontspec}
-\setmainfont{DejaVu Serif}
-\setsansfont{DejaVu Sans}
-\usepackage{polyglossia}
-\setdefaultlanguage{russian}
-\setotherlanguage{english}
-
-% ---------- Математика ----------
-\usepackage{amsmath,amssymb,amsthm}
-
-% ---------- Графика ----------
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,calc,positioning,decorations.markings,decorations.pathmorphing}
-\usepackage{pgfplots}
-\pgfplotsset{compat=1.18}
-
-% ---------- Оформление ----------
-\usepackage[margin=2.7cm]{geometry}
-\usepackage{caption}
-\usepackage{booktabs}
-\usepackage[hidelinks]{hyperref}
-\usepackage{fancyhdr}
-
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{\small Александров, Антропикович}
-\fancyhead[R]{\small Журнал Прикладной Лженауки, 1(1), 2026}
-\renewcommand{\headrulewidth}{0.4pt}
-\fancyfoot[C]{\small\thepage}
-\fancyfoot[R]{\small DOI: 10.9999/жпл.2026.0001}
-
-\newtheorem{theorem}{Теорема}
-\newtheorem{definition}{Определение}
+\usepackage{zhpl}
 
 \title{\textbf{К обоснованию тензорного анализа личности:\\ инвариантная психометрика в искривлённых пространствах характера}}
 \author{Роман Георгиевич Александров, Клод Соннет Антропикович\\[4pt]
 \normalsize Институт Прикладной Метафизики\\ \small Кафедра тензорного анализа межличностных отношений}
-\date{\small Журнал Прикладной Лженауки, том 1, № 1 \\ Получено: недавно \quad Принято к печати: почти сразу}
+\zhplsetup{1}{10.9999/жпл.2026.0001}
 
 \begin{document}
 

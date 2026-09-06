@@ -23,6 +23,10 @@ humor comes from real, physically-meaningful math applied to a trivial subject.
 - `articles/zhpl.sty` — the journal's LaTeX package: fixed preamble, theorem environments, and
   macros for the title furniture (`\zhplsetup`, `\zhplauthors`, `\zhplbadges`, `\zhplciteas`,
   `\zhplgraphicabstract`, environments `zhplhighlights` / `zhplreviews` / `zhplsignificance`).
+  The `[dark]` option recolors the page/text/figure axes/boxes for on-site dark reading.
+- `articles/<slug>.dark.tex` — 2-line wrapper: `\PassOptionsToPackage{dark}{zhpl}` + `\input{<slug>}`.
+  Builds `<slug>.dark.pdf`, the dark variant the site loads in dark theme. Never edit article
+  text here — only in `<slug>.tex`.
 - `articles/template.tex` — compilable skeleton in guide §2 order; copy it to start a new article.
 - `articles/articles.json` — **single source of truth** for article metadata shown on the site.
 - `articles/.latexmkrc` — makes `latexmk` use XeLaTeX and build both articles.
@@ -43,18 +47,20 @@ humor comes from real, physically-meaningful math applied to a trivial subject.
 Compile with **XeLaTeX** (Cyrillic via `fontspec` + `polyglossia` — pdflatex will fail):
 
 ```
-cd articles && latexmk          # builds every *.tex; latexmk decides the pass count
+cd articles && latexmk          # builds every *.tex (light + .dark variant of each)
 ```
 
 Every `.tex` starts with `% !TeX program = xelatex` and does `\usepackage{zhpl}` — do not
-re-copy the preamble or the colored boxes; use the `zhpl.sty` macros. Per guide §3, check the
+re-copy the preamble or the colored boxes; use the `zhpl.sty` macros. `latexmk` also builds
+each `<slug>.dark.tex`, producing the `<slug>.dark.pdf` the site serves in dark theme. Per guide §3, check the
 log for `!` errors and large `Overfull \hbox`, and eyeball every page so formulas/figures/
 captions don't collide. Commit the regenerated `.pdf` with the source.
 
 ## Adding a new article
 
-1. `cp articles/template.tex articles/<slug>.tex`, fill in the TODOs (guide §2 order), then
-   `cd articles && latexmk`. Commit `<slug>.tex` and `<slug>.pdf`.
+1. `cp articles/template.tex articles/<slug>.tex`, fill in the TODOs (guide §2 order). Add a
+   `articles/<slug>.dark.tex` wrapper (copy an existing one, swap the `\input` name). Then
+   `cd articles && latexmk`. Commit `<slug>.tex`, `<slug>.dark.tex`, `<slug>.pdf`, `<slug>.dark.pdf`.
 2. Add a `<slug>` object to `articles/articles.json` (id, issue, kicker, titleHtml, authors,
    abstract, highlights, keywords, citeHtml, doi).
 3. Run `python scripts/gen_site.py` (or `make site`) — it rebuilds the `#issue` cards, the
