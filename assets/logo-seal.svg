@@ -2,19 +2,19 @@
   <circle cx="120" cy="120" r="114" fill="none" stroke="#2a241c" stroke-width="3"/>
   <circle cx="120" cy="120" r="84" fill="none" stroke="#2a241c" stroke-width="1.2"/>
 
-  <!-- Дуги короче полного полукруга (со стыков дот сняты по 15°) — гарантированный
-       геометрический зазор у обеих точек-разделителей, не зависящий от того,
-       насколько по-разному разные движки посчитают textLength/lengthAdjust. -->
+  <!-- Дуги короче полного полукруга (по 15° отступ от каждой точки-разделителя) —
+       геометрический зазор у стыков, не зависящий от метрик шрифта. -->
   <path id="topArc" d="M 24.37 94.38 A 99 99 0 0 1 215.63 94.38" fill="none"/>
   <path id="botArc" d="M 215.63 145.62 A 99 99 0 0 1 24.37 145.62" fill="none"/>
 
-  <text font-family="Georgia, 'Times New Roman', serif" font-size="16" dominant-baseline="central" fill="#2a241c">
-    <textPath href="#topArc" startOffset="50%" text-anchor="middle"
-              textLength="225" lengthAdjust="spacing">ЖУРНАЛ ПРИКЛАДНОЙ ЛЖЕНАУКИ</textPath>
+  <!-- Размер и letter-spacing подобраны по фактической ширине текста (Times New
+       Roman — реальный шрифт-замена, раз Georgia не установлена), без textLength/
+       lengthAdjust: на этой комбинации текст+путь оно ломало раскладку буквы. -->
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="10" letter-spacing="2.1" fill="#2a241c">
+    <textPath href="#topArc" startOffset="50%" text-anchor="middle" dy="-3.5">ЖУРНАЛ ПРИКЛАДНОЙ ЛЖЕНАУКИ</textPath>
   </text>
-  <text font-family="Georgia, 'Times New Roman', serif" font-size="16" dominant-baseline="central" fill="#2a241c">
-    <textPath href="#botArc" startOffset="50%" text-anchor="middle"
-              textLength="225" lengthAdjust="spacing">ИНСТИТУТ ПРИКЛАДНОЙ МЕТАФИЗИКИ</textPath>
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="10" letter-spacing="1" fill="#2a241c">
+    <textPath href="#botArc" startOffset="50%" text-anchor="middle" dy="-3.5">ИНСТИТУТ ПРИКЛАДНОЙ МЕТАФИЗИКИ</textPath>
   </text>
 
   <circle cx="21" cy="120" r="2" fill="#2a241c"/>
