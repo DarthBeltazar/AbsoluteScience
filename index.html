@@ -109,13 +109,18 @@
         </div>
 
         <div class="article-actions">
-          <button type="button" class="btn read-btn" onclick="toggleReader(this, 'reader-1')">Читать на сайте</button>
+          <button type="button" class="btn read-btn" aria-expanded="false" onclick="toggleReader(this, 'reader-1')">Читать на сайте</button>
           <a class="btn secondary" href="articles/tenzornaya_psikhometriya.pdf">Скачать PDF</a>
           <a class="btn secondary" href="articles/tenzornaya_psikhometriya.tex">Исходник (.tex)</a>
         </div>
 
         <div class="pdf-reader-wrap" id="reader-1-wrap" hidden>
-          <iframe id="reader-1" class="pdf-reader" data-src="articles/tenzornaya_psikhometriya.pdf"
+          <div class="pdf-reader-bar">
+            <span class="pdf-reader-name">К обоснованию тензорного анализа личности</span>
+            <button type="button" class="pdf-dark-btn" aria-pressed="false" onclick="togglePdfDark()">Тёмный PDF</button>
+            <a class="pdf-reader-link" href="articles/tenzornaya_psikhometriya.pdf#view=FitH" target="_blank" rel="noopener">Открыть отдельно ↗</a>
+          </div>
+          <iframe id="reader-1" class="pdf-reader" data-src="articles/tenzornaya_psikhometriya.pdf#view=FitH"
                   title="К обоснованию тензорного анализа личности — полный текст"></iframe>
         </div>
       </article>
@@ -150,13 +155,18 @@
         </div>
 
         <div class="article-actions">
-          <button type="button" class="btn read-btn" onclick="toggleReader(this, 'reader-2')">Читать на сайте</button>
+          <button type="button" class="btn read-btn" aria-expanded="false" onclick="toggleReader(this, 'reader-2')">Читать на сайте</button>
           <a class="btn secondary" href="articles/termodinamika_burmaldy.pdf">Скачать PDF</a>
           <a class="btn secondary" href="articles/termodinamika_burmaldy.tex">Исходник (.tex)</a>
         </div>
 
         <div class="pdf-reader-wrap" id="reader-2-wrap" hidden>
-          <iframe id="reader-2" class="pdf-reader" data-src="articles/termodinamika_burmaldy.pdf"
+          <div class="pdf-reader-bar">
+            <span class="pdf-reader-name">К термодинамическому обоснованию бурмалды</span>
+            <button type="button" class="pdf-dark-btn" aria-pressed="false" onclick="togglePdfDark()">Тёмный PDF</button>
+            <a class="pdf-reader-link" href="articles/termodinamika_burmaldy.pdf#view=FitH" target="_blank" rel="noopener">Открыть отдельно ↗</a>
+          </div>
+          <iframe id="reader-2" class="pdf-reader" data-src="articles/termodinamika_burmaldy.pdf#view=FitH"
                   title="К термодинамическому обоснованию бурмалды — полный текст"></iframe>
         </div>
       </article>
@@ -203,22 +213,71 @@
 </footer>
 
 <script>
-function toggleReader(btn, id) {
-  var wrap = document.getElementById(id + '-wrap');
-  var frame = document.getElementById(id);
-  var opening = wrap.hasAttribute('hidden');
-  if (opening) {
-    if (!frame.getAttribute('src')) {
-      frame.setAttribute('src', frame.getAttribute('data-src'));
-    }
-    wrap.removeAttribute('hidden');
-    btn.textContent = 'Свернуть статью';
-    wrap.scrollIntoView({behavior: 'smooth', block: 'nearest'});
-  } else {
-    wrap.setAttribute('hidden', '');
-    btn.textContent = 'Читать на сайте';
+(function () {
+  var KEY = 'zhpl:pdfDark';
+
+  function stored() {
+    try { return localStorage.getItem(KEY); } catch (e) { return null; }
   }
-}
+  function store(v) {
+    try { localStorage.setItem(KEY, v); } catch (e) {}
+  }
+  function prefersDark() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+  // По умолчанию следуем теме сайта; явный выбор пользователя её перекрывает.
+  function pdfDarkOn() {
+    var s = stored();
+    return s === null ? prefersDark() : s === '1';
+  }
+  function applyPdfDark(on) {
+    var frames = document.querySelectorAll('.pdf-reader');
+    for (var i = 0; i < frames.length; i++) frames[i].classList.toggle('pdf-dark', on);
+    var btns = document.querySelectorAll('.pdf-dark-btn');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].textContent = on ? 'Обычный PDF' : 'Тёмный PDF';
+      btns[j].setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+  }
+
+  window.togglePdfDark = function () {
+    var on = !pdfDarkOn();
+    store(on ? '1' : '0');
+    applyPdfDark(on);
+  };
+
+  window.toggleReader = function (btn, id) {
+    var wrap = document.getElementById(id + '-wrap');
+    var frame = document.getElementById(id);
+    var opening = wrap.hasAttribute('hidden');
+    if (opening) {
+      if (!frame.getAttribute('src')) {
+        frame.setAttribute('src', frame.getAttribute('data-src'));
+      }
+      applyPdfDark(pdfDarkOn());
+      wrap.hidden = false;
+      btn.textContent = 'Свернуть статью';
+      btn.setAttribute('aria-expanded', 'true');
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      wrap.hidden = true;
+      btn.textContent = 'Читать на сайте';
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  };
+
+  // Синхронизируем подписи кнопок с текущим режимом сразу при загрузке.
+  applyPdfDark(pdfDarkOn());
+
+  // Пока пользователь не выбрал режим явно — реагируем на смену системной темы.
+  if (window.matchMedia) {
+    try {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+        if (stored() === null) applyPdfDark(prefersDark());
+      });
+    } catch (e) {}
+  }
+})();
 </script>
 </body>
 </html>

@@ -49,7 +49,10 @@ def render_article(art: dict, n: int) -> str:
     pdf = f"articles/{art_id}.pdf"
     tex = f"articles/{art_id}.tex"
     reader = f"reader-{n}"
-    iframe_title = html.escape(f"{short_title(title_html)} — полный текст")
+    short = short_title(title_html)
+    reader_name = html.escape(short)
+    iframe_title = html.escape(f"{short} — полный текст")
+    pdf_view = f"{pdf}#view=FitH"  # открывать по ширине страницы
 
     highlights = "\n".join(
         f"          <li>{h}</li>" for h in art["highlights"]  # <em>/<sub> допускаются
@@ -82,13 +85,18 @@ def render_article(art: dict, n: int) -> str:
         </div>
 
         <div class="article-actions">
-          <button type="button" class="btn read-btn" onclick="toggleReader(this, '{reader}')">Читать на сайте</button>
+          <button type="button" class="btn read-btn" aria-expanded="false" onclick="toggleReader(this, '{reader}')">Читать на сайте</button>
           <a class="btn secondary" href="{pdf}">Скачать PDF</a>
           <a class="btn secondary" href="{tex}">Исходник (.tex)</a>
         </div>
 
         <div class="pdf-reader-wrap" id="{reader}-wrap" hidden>
-          <iframe id="{reader}" class="pdf-reader" data-src="{pdf}"
+          <div class="pdf-reader-bar">
+            <span class="pdf-reader-name">{reader_name}</span>
+            <button type="button" class="pdf-dark-btn" aria-pressed="false" onclick="togglePdfDark()">Тёмный PDF</button>
+            <a class="pdf-reader-link" href="{pdf_view}" target="_blank" rel="noopener">Открыть отдельно ↗</a>
+          </div>
+          <iframe id="{reader}" class="pdf-reader" data-src="{pdf_view}"
                   title="{iframe_title}"></iframe>
         </div>
       </article>"""
