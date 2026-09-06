@@ -108,23 +108,28 @@
 \newcommand{\zhplbox@rev}{gray!6}
 \newcommand{\zhplbox@sig}{blue!4}
 % Цвет текста внутри боксов: в светлом варианте — по умолчанию (чёрный), в тёмном
-% задаётся явно, т.к. minipage сбрасывает цвет через \@parboxrestore/\normalcolor.
+% задаётся явно. Содержимое собирается в lrbox и лишь затем оборачивается
+% \fcolorbox — иначе \fcolorbox навязывает своему аргументу \normalcolor.
 \newcommand{\zhplbox@fg}{}
+\newsavebox{\zhpl@boxbuf}
 
 \newenvironment{zhplhighlights}
-  {\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@hi}{\begin{minipage}{0.94\linewidth}%
+  {\begin{lrbox}{\zhpl@boxbuf}\begin{minipage}{0.94\linewidth}%
    \zhplbox@fg\vspace{1pt}\small\textbf{Основные результаты}\par}
-  {\vspace{-6pt}\end{minipage}}\par}
+  {\vspace{-6pt}\end{minipage}\end{lrbox}%
+   \par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@hi}{\usebox{\zhpl@boxbuf}}\par}
 
 \newenvironment{zhplreviews}
-  {\vspace{4pt}\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@rev}{\begin{minipage}{0.94\linewidth}%
+  {\begin{lrbox}{\zhpl@boxbuf}\begin{minipage}{0.94\linewidth}%
    \zhplbox@fg\small\textit{Из отзывов рецензентов:}\\}
-  {\end{minipage}}\par}
+  {\end{minipage}\end{lrbox}%
+   \vspace{4pt}\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@rev}{\usebox{\zhpl@boxbuf}}\par}
 
 \newenvironment{zhplsignificance}
-  {\vspace{10pt}\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@sig}{\begin{minipage}{0.94\linewidth}%
+  {\begin{lrbox}{\zhpl@boxbuf}\begin{minipage}{0.94\linewidth}%
    \zhplbox@fg\textbf{Значимость исследования.} }
-  {\end{minipage}}\vspace{6pt}\par}
+  {\end{minipage}\end{lrbox}%
+   \vspace{10pt}\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@sig}{\usebox{\zhpl@boxbuf}}\vspace{6pt}\par}
 
 % ---------- Тёмный вариант ----------
 % Идея: перекрасить только «оформительские» слои (фон страницы, текст, оси и
