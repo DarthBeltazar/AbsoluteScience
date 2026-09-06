@@ -20,8 +20,8 @@
 
 \begin{center}
 \begin{tikzpicture}
-\node[draw=\zhplbadgecolor{red!70!black}{zhplBadgeRed},very thick,rounded corners,rotate=-6,fill=red!5,inner sep=5pt] (badge1) {\color{\zhplbadgecolor{red!70!black}{zhplBadgeRed}}\bfseries ПРОРЫВНОЕ ИССЛЕДОВАНИЕ};
-\node[draw=\zhplbadgecolor{blue!60!black}{zhplBadgeBlue},very thick,rounded corners,rotate=4,fill=blue!5,inner sep=5pt,right=1.0cm of badge1] (badge2) {\color{\zhplbadgecolor{blue!60!black}{zhplBadgeBlue}}\bfseries IMPACT FACTOR: $\infty$};
+\node[draw=\zhplbadgecolor{red!70!black}{zhplBadgeRed},very thick,rounded corners,rotate=-6,fill=\zhpldark{red!5},inner sep=5pt] (badge1) {\color{\zhplbadgecolor{red!70!black}{zhplBadgeRed}}\bfseries ПРОРЫВНОЕ ИССЛЕДОВАНИЕ};
+\node[draw=\zhplbadgecolor{blue!60!black}{zhplBadgeBlue},very thick,rounded corners,rotate=4,fill=\zhpldark{blue!5},inner sep=5pt,right=1.0cm of badge1] (badge2) {\color{\zhplbadgecolor{blue!60!black}{zhplBadgeBlue}}\bfseries IMPACT FACTOR: $\infty$};
 \end{tikzpicture}
 \end{center}
 
@@ -33,10 +33,10 @@
 \begin{figure}[h!]
 \centering
 \begin{tikzpicture}[node distance=0.9cm, every node/.style={font=\footnotesize}]
-  \node[draw,rounded corners,fill=blue!5,minimum width=2.5cm,minimum height=1.05cm,align=center] (n1) {Компания\\($t=0$, трезвая)};
-  \node[draw,rounded corners,fill=blue!5,minimum width=2.7cm,minimum height=1.05cm,align=center,right=of n1] (n2) {Обмен репликами\\(микросостояния $\Omega$)};
-  \node[draw,rounded corners,fill=blue!5,minimum width=2.5cm,minimum height=1.05cm,align=center,right=of n2] (n3) {Накопление\\бурмалды $\Burm(t)$};
-  \node[draw,rounded corners,fill=green!8,minimum width=2.7cm,minimum height=1.05cm,align=center,right=of n3] (n4) {Тепловая смерть\\вечеринки (все в телефонах)};
+  \node[draw,rounded corners,fill=\zhpldark{blue!5},minimum width=2.5cm,minimum height=1.05cm,align=center] (n1) {Компания\\($t=0$, трезвая)};
+  \node[draw,rounded corners,fill=\zhpldark{blue!5},minimum width=2.7cm,minimum height=1.05cm,align=center,right=of n1] (n2) {Обмен репликами\\(микросостояния $\Omega$)};
+  \node[draw,rounded corners,fill=\zhpldark{blue!5},minimum width=2.5cm,minimum height=1.05cm,align=center,right=of n2] (n3) {Накопление\\бурмалды $\Burm(t)$};
+  \node[draw,rounded corners,fill=\zhpldark{green!8},minimum width=2.7cm,minimum height=1.05cm,align=center,right=of n3] (n4) {Тепловая смерть\\вечеринки (все в телефонах)};
   \draw[-{Latex[length=2.5mm]},very thick] (n1) -- (n2);
   \draw[-{Latex[length=2.5mm]},very thick] (n2) -- (n3);
   \draw[-{Latex[length=2.5mm]},very thick] (n3) -- (n4);
@@ -230,7 +230,7 @@
   \draw[very thick,-{Latex[length=2.2mm]}] (A) to[bend left=12] (C);
   \node[below] at (1.3,-2.9) {\footnotesize $T_A=T_B=T_C$: симметричный обмен, нетто-поток нулевой};
   % Новый кластер D с иной температурой
-  \node[circle,draw,thick,fill=orange!12,minimum size=0.9cm] (D) at (5.4,-1.0) {\footnotesize $D$};
+  \node[circle,draw,thick,fill=\zhpldark{orange!12},minimum size=0.9cm] (D) at (5.4,-1.0) {\footnotesize $D$};
   \draw[very thick,red,-{Latex[length=3mm]}] (D) -- (B);
   \node[right,align=left,font=\footnotesize] at (5.7,-1.0) {\;$T_D>T_B$:\\[1pt]направленный\\приток новизны};
 \end{tikzpicture}
@@ -293,9 +293,9 @@
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[node distance=1.1cm, every node/.style={font=\footnotesize}]
-  \node[draw,rounded corners,fill=blue!5,minimum width=3.0cm,minimum height=1.0cm,align=center] (conv) {Разговорный кластер\\$\Delta\Burm_{\text{кластер}}<0$};
-  \node[draw,rounded corners,fill=orange!10,minimum width=2.6cm,minimum height=1.0cm,align=center,below=of conv] (demon) {Демон Бурмалды\\(сбор + обработка информации)};
-  \node[draw,rounded corners,fill=red!8,minimum width=3.0cm,minimum height=1.0cm,align=center,right=1.6cm of demon] (export) {Экспорт бурмалды\\$\Delta\Burm_{\text{демон}}\geq|\Delta\Burm_{\text{кластер}}|$};
+  \node[draw,rounded corners,fill=\zhpldark{blue!5},minimum width=3.0cm,minimum height=1.0cm,align=center] (conv) {Разговорный кластер\\$\Delta\Burm_{\text{кластер}}<0$};
+  \node[draw,rounded corners,fill=\zhpldark{orange!10},minimum width=2.6cm,minimum height=1.0cm,align=center,below=of conv] (demon) {Демон Бурмалды\\(сбор + обработка информации)};
+  \node[draw,rounded corners,fill=\zhpldark{red!8},minimum width=3.0cm,minimum height=1.0cm,align=center,right=1.6cm of demon] (export) {Экспорт бурмалды\\$\Delta\Burm_{\text{демон}}\geq|\Delta\Burm_{\text{кластер}}|$};
   \draw[very thick,-{Latex[length=2.5mm]}] ($(conv.south)+(-0.45,0)$) -- node[left=2pt]{наблюдение} ($(demon.north)+(-0.45,0)$);
   \draw[very thick,-{Latex[length=2.5mm]},blue] ($(demon.north)+(0.45,0)$) -- node[right=2pt]{вмешательство} ($(conv.south)+(0.45,0)$);
   \draw[very thick,-{Latex[length=2.5mm]},red] (demon) -- (export);
@@ -329,7 +329,7 @@
 \addplot[very thick,blue,domain=0:1,samples=200] {1-x};
 \addplot[name path=curve,draw=none,domain=0:1,samples=200] {1-x};
 \addplot[name path=axis,draw=none,domain=0:1] {0};
-\addplot[blue!8] fill between[of=curve and axis];
+\addplot[\zhpldark{blue!8}] fill between[of=curve and axis];
 \node[font=\footnotesize] at (axis cs:0.62,0.62) {недостижимая область};
 \end{axis}
 \end{tikzpicture}

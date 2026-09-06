@@ -15,8 +15,8 @@
 
 \begin{center}
 \begin{tikzpicture}
-\node[draw=\zhplbadgecolor{red!70!black}{zhplBadgeRed},very thick,rounded corners,rotate=-6,fill=red!5,inner sep=5pt] (badge1) {\color{\zhplbadgecolor{red!70!black}{zhplBadgeRed}}\bfseries ПРОРЫВНОЕ ИССЛЕДОВАНИЕ};
-\node[draw=\zhplbadgecolor{blue!60!black}{zhplBadgeBlue},very thick,rounded corners,rotate=4,fill=blue!5,inner sep=5pt,right=1.0cm of badge1] (badge2) {\color{\zhplbadgecolor{blue!60!black}{zhplBadgeBlue}}\bfseries IMPACT FACTOR: $\infty$};
+\node[draw=\zhplbadgecolor{red!70!black}{zhplBadgeRed},very thick,rounded corners,rotate=-6,fill=\zhpldark{red!5},inner sep=5pt] (badge1) {\color{\zhplbadgecolor{red!70!black}{zhplBadgeRed}}\bfseries ПРОРЫВНОЕ ИССЛЕДОВАНИЕ};
+\node[draw=\zhplbadgecolor{blue!60!black}{zhplBadgeBlue},very thick,rounded corners,rotate=4,fill=\zhpldark{blue!5},inner sep=5pt,right=1.0cm of badge1] (badge2) {\color{\zhplbadgecolor{blue!60!black}{zhplBadgeBlue}}\bfseries IMPACT FACTOR: $\infty$};
 \end{tikzpicture}
 \end{center}
 
@@ -28,10 +28,10 @@
 \begin{figure}[h!]
 \centering
 \begin{tikzpicture}[node distance=0.9cm, every node/.style={font=\footnotesize}]
-  \node[draw,rounded corners,fill=blue!5,minimum width=2.1cm,minimum height=0.95cm,align=center] (n1) {Человек\\(наблюдаемый)};
-  \node[draw,rounded corners,fill=blue!5,minimum width=2.7cm,minimum height=0.95cm,align=center,right=of n1] (n2) {Тензор кривизны\\характера $R^{\rho}{}_{\sigma\mu\nu}$};
-  \node[draw,rounded corners,fill=blue!5,minimum width=2.4cm,minimum height=0.95cm,align=center,right=of n2] (n3) {Полная свёртка\\(скаляр Кречмана)};
-  \node[draw,rounded corners,fill=green!8,minimum width=2.7cm,minimum height=0.95cm,align=center,right=of n3] (n4) {Инвариантная\\оценка $K_{\text{личн}}$};
+  \node[draw,rounded corners,fill=\zhpldark{blue!5},minimum width=2.1cm,minimum height=0.95cm,align=center] (n1) {Человек\\(наблюдаемый)};
+  \node[draw,rounded corners,fill=\zhpldark{blue!5},minimum width=2.7cm,minimum height=0.95cm,align=center,right=of n1] (n2) {Тензор кривизны\\характера $R^{\rho}{}_{\sigma\mu\nu}$};
+  \node[draw,rounded corners,fill=\zhpldark{blue!5},minimum width=2.4cm,minimum height=0.95cm,align=center,right=of n2] (n3) {Полная свёртка\\(скаляр Кречмана)};
+  \node[draw,rounded corners,fill=\zhpldark{green!8},minimum width=2.7cm,minimum height=0.95cm,align=center,right=of n3] (n4) {Инвариантная\\оценка $K_{\text{личн}}$};
   \draw[-{Latex[length=2.5mm]},very thick] (n1) -- (n2);
   \draw[-{Latex[length=2.5mm]},very thick] (n2) -- (n3);
   \draw[-{Latex[length=2.5mm]},very thick] (n3) -- (n4);
@@ -130,7 +130,7 @@
 \centering
 \begin{tikzpicture}[scale=1.15]
   % Искривлённая поверхность -- сетка меридианов и параллелей, как на глобусе
-  \fill[blue!4] (0,0) ellipse (3.4 and 2.4);
+  \fill[\zhpldark{blue!4}] (0,0) ellipse (3.4 and 2.4);
   \begin{scope}
     \clip (0,0) ellipse (3.4 and 2.4);
     \foreach \lam in {15,30,45,60,75}{
@@ -205,7 +205,7 @@ K_{\text{личн}} = R_{\mu\nu\rho\sigma}\,R^{\mu\nu\rho\sigma}.
 \centering
 \begin{tikzpicture}[scale=1.1]
   % Искривлённая поверхность (профиль) -- парабола, чтобы касательная считалась точно
-  \fill[blue!4] plot[smooth,domain=-3.2:3.2,samples=60]
+  \fill[\zhpldark{blue!4}] plot[smooth,domain=-3.2:3.2,samples=60]
     ({\x},{0.85 - 0.083*\x*\x}) -- (3.2,-2) -- (-3.2,-2) -- cycle;
   \draw[thick] plot[smooth,domain=-3.2:3.2,samples=60]
     ({\x},{0.85 - 0.083*\x*\x});
