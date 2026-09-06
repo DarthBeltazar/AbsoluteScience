@@ -73,9 +73,14 @@
   \pagecolor{zhplBg}
   % Цвет текста по умолчанию + \normalcolor (minipage/tabular возвращают текст
   % к \normalcolor через \@parboxrestore). Хук идёт после хука xcolor.
+  % Плюс: перекрываем \fcolorbox — три цветных бокса в статьях всё ещё заданы
+  % инлайн как \fcolorbox{black}{yellow!10}{…}; в тёмной теме принудительно
+  % делаем заливку тёмной, рамку — светлой (тинты на тёмном фоне нечитаемы).
   \AtBeginDocument{%
     \color{zhplFg}%
     \def\normalcolor{\color{zhplFg}}%
+    \let\zhpl@orig@fcolorbox\fcolorbox
+    \renewcommand\fcolorbox[3]{\zhpl@orig@fcolorbox{zhplMuted}{black!88}{{\color{zhplFg}#3}}}%
   }
 
   \renewcommand{\headrule}{\hbox to\headwidth{\color{zhplRule}%
