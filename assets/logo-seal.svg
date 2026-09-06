@@ -3,18 +3,25 @@
   <circle cx="120" cy="120" r="84" fill="none" stroke="#2a241c" stroke-width="1.2"/>
 
   <!-- Дуги короче полного полукруга (по 15° отступ от каждой точки-разделителя) —
-       геометрический зазор у стыков, не зависящий от метрик шрифта. -->
-  <path id="topArc" d="M 24.37 94.38 A 99 99 0 0 1 215.63 94.38" fill="none"/>
-  <path id="botArc" d="M 215.63 145.62 A 99 99 0 0 1 24.37 145.62" fill="none"/>
+       геометрический зазор у стыков, не зависящий от метрик шрифта.
+       Радиус дуги (95.3) — не середина зазора 84..114 (это 99): у прописных
+       букв без нижних выносных вся чернильная масса выше базовой линии, и
+       измерение (рендер + скан пикселей) показало, что при базовой линии на
+       радиусе 99 центр самих букв съезжает к 102.7 — на 3.7 ближе к внешнему
+       кольцу. Радиус базовой линии сдвинут на ту же величину внутрь, чтобы
+       центр букв совпал с центром зазора (99). dy на textPath эту разницу не
+       выправляет — атрибут в этом рендере молча игнорируется. -->
+  <path id="topArc" d="M 27.95 95.33 A 95.3 95.3 0 0 1 212.05 95.33" fill="none"/>
+  <path id="botArc" d="M 212.05 144.67 A 95.3 95.3 0 0 1 27.95 144.67" fill="none"/>
 
   <!-- Размер и letter-spacing подобраны по фактической ширине текста (Times New
        Roman — реальный шрифт-замена, раз Georgia не установлена), без textLength/
        lengthAdjust: на этой комбинации текст+путь оно ломало раскладку буквы. -->
   <text font-family="Georgia, 'Times New Roman', serif" font-size="10" letter-spacing="2.1" fill="#2a241c">
-    <textPath href="#topArc" startOffset="50%" text-anchor="middle" dy="-3.5">ЖУРНАЛ ПРИКЛАДНОЙ ЛЖЕНАУКИ</textPath>
+    <textPath href="#topArc" startOffset="50%" text-anchor="middle">ЖУРНАЛ ПРИКЛАДНОЙ ЛЖЕНАУКИ</textPath>
   </text>
   <text font-family="Georgia, 'Times New Roman', serif" font-size="10" letter-spacing="1" fill="#2a241c">
-    <textPath href="#botArc" startOffset="50%" text-anchor="middle" dy="-3.5">ИНСТИТУТ ПРИКЛАДНОЙ МЕТАФИЗИКИ</textPath>
+    <textPath href="#botArc" startOffset="50%" text-anchor="middle">ИНСТИТУТ ПРИКЛАДНОЙ МЕТАФИЗИКИ</textPath>
   </text>
 
   <circle cx="21" cy="120" r="2" fill="#2a241c"/>
