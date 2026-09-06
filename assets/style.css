@@ -78,22 +78,9 @@ header.masthead{
 
 .seal{
   flex:0 0 auto;
-  width:74px;
-  height:74px;
-  border-radius:50%;
-  border:2px solid var(--ink);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  font-family:var(--sans);
-  font-size:0.62rem;
-  letter-spacing:0.05em;
-  color:var(--ink-soft);
-  background:
-    radial-gradient(circle at 50% 50%, transparent 58%, var(--rule) 59%, var(--rule) 61%, transparent 62%),
-    var(--paper);
-  padding:6px;
+  width:86px;
+  height:86px;
+  display:block;
 }
 
 .masthead-titles h1{
