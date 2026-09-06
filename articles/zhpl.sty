@@ -56,9 +56,6 @@
 %  Цвета серий на графиках (blue/red/green) не трогаются.
 % ======================================================================
 \ifzhpl@dark
-  \RequirePackage{pagecolor}
-  \RequirePackage{colortbl}
-
   \definecolor{zhplBg}{HTML}{1C1A15}
   \definecolor{zhplFg}{HTML}{EAE3D2}
   \definecolor{zhplMuted}{HTML}{B3A88F}
@@ -83,7 +80,6 @@
 
   \renewcommand{\headrule}{\hbox to\headwidth{\color{zhplRule}%
     \leaders\hrule height \headrulewidth\hfill}}
-  \arrayrulecolor{zhplRule}
 
   \pgfplotsset{
     every axis/.append style={
