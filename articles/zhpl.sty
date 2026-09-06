@@ -181,4 +181,8 @@
   {\end{minipage}\end{lrbox}%
    \vspace{10pt}\par\noindent\fcolorbox{\zhplbox@frame}{\zhplbox@sig}{\usebox{\zhpl@boxbuf}}\vspace{6pt}\par}
 
+\typeout{ZHPLDIAG dark=\ifzhpl@dark TRUE\else FALSE\fi
+  ^^J  frame=\meaning\zhplbox@hi
+  ^^J  hi=\meaning\zhplbox@hi rev=\meaning\zhplbox@rev fg=\meaning\zhplbox@fg}
+
 \endinput
