@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
-"""Пересобрать блок «Текущий номер» и счётчики в index.html из articles/articles.json.
+"""Пересобрать блок «Текущий номер», счётчики в index.html и sitemap.xml
+из articles/articles.json.
 
 articles.json — единственный источник правды по метаданным статей. Сайт их больше
-не хранит вручную. Статья с "hidden": true пропускается: не попадает в карточки и
-в счётчик, но её .tex/.pdf остаются в репозитории и доступны по прямой ссылке.
-Скрипт трогает только области между маркерами:
+не хранит вручную. Статья с "hidden": true пропускается: не попадает в карточки,
+в счётчик и в sitemap.xml, но её .tex/.pdf остаются в репозитории и доступны по
+прямой ссылке. В index.html скрипт трогает только области между маркерами:
 
     <!-- ARTICLES:START --> ... <!-- ARTICLES:END -->   — карточки статей
     <!-- STAT:articles --> ... <!-- /STAT:articles -->   — число опубликованных статей
     <!-- STAT:volume --> ... <!-- /STAT:volume -->       — номер тома
     <!-- ISSUE-HEADING --> ... <!-- /ISSUE-HEADING -->   — «Том N · YYYY»
 
-Остальная разметка не изменяется.
+sitemap.xml перезаписывается целиком. Остальная разметка index.html не изменяется.
 
 Использование:
-    python scripts/gen_site.py            # переписать index.html
-    python scripts/gen_site.py --check    # не писать; код возврата 1, если файл устарел
+    python scripts/gen_site.py            # переписать index.html и sitemap.xml
+    python scripts/gen_site.py --check    # не писать; код возврата 1, если файлы устарели
 """
 from __future__ import annotations
 
@@ -29,6 +30,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "articles" / "articles.json"
 INDEX = ROOT / "index.html"
+SITEMAP = ROOT / "sitemap.xml"
+BASE_URL = "https://darthbeltazar.github.io/AbsoluteScience/"
 
 
 def short_title(title_html: str) -> str:
@@ -122,6 +125,21 @@ def render_articles(manifest: dict) -> str:
     return "\n\n".join(blocks)
 
 
+def render_sitemap(manifest: dict) -> str:
+    """sitemap.xml: главная страница + PDF каждой видимой статьи (скрытые — не
+    рекламируем поисковикам, хотя файлы и остаются доступны по прямой ссылке)."""
+    urls = [BASE_URL] + [
+        f"{BASE_URL}articles/{art['id']}.pdf" for art in visible_articles(manifest)
+    ]
+    entries = "\n".join(f"  <url>\n    <loc>{u}</loc>\n  </url>" for u in urls)
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{entries}\n"
+        "</urlset>\n"
+    )
+
+
 def replace_region(text: str, name: str, inner: str, *, block: bool) -> str:
     """Заменить содержимое между парными маркерами-комментариями.
 
@@ -171,19 +189,32 @@ def main() -> int:
     current = INDEX.read_text(encoding="utf-8")
     updated = build(manifest, current)
 
-    if updated == current:
-        print("index.html уже синхронен с articles/articles.json")
+    current_sitemap = SITEMAP.read_text(encoding="utf-8") if SITEMAP.exists() else None
+    updated_sitemap = render_sitemap(manifest)
+
+    index_stale = updated != current
+    sitemap_stale = updated_sitemap != current_sitemap
+
+    if not index_stale and not sitemap_stale:
+        print("index.html и sitemap.xml уже синхронны с articles/articles.json")
         return 0
 
     if args.check:
-        print("index.html устарел: запустите `python scripts/gen_site.py`", file=sys.stderr)
+        if index_stale:
+            print("index.html устарел: запустите `python scripts/gen_site.py`", file=sys.stderr)
+        if sitemap_stale:
+            print("sitemap.xml устарел: запустите `python scripts/gen_site.py`", file=sys.stderr)
         return 1
 
-    INDEX.write_text(updated, encoding="utf-8")
+    if index_stale:
+        INDEX.write_text(updated, encoding="utf-8")
+    if sitemap_stale:
+        SITEMAP.write_text(updated_sitemap, encoding="utf-8")
+
     shown = len(visible_articles(manifest))
     hidden = len(manifest["articles"]) - shown
     note = f", скрыто {hidden}" if hidden else ""
-    print(f"index.html обновлён ({shown} статей{note})")
+    print(f"index.html и sitemap.xml обновлены ({shown} статей{note})")
     return 0
 
 

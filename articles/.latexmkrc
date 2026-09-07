@@ -8,13 +8,13 @@
 $pdf_mode = 5;   # 5 = XeLaTeX
 $xelatex  = 'xelatex -interaction=nonstopmode -halt-on-error -synctex=1 %O %S';
 
-# Build the real articles (light + dark variant of each); template.tex is a
-# scaffold, not a publication. The .dark.tex wrappers reuse the main source.
-@default_files = (
-  'tenzornaya_psikhometriya.tex', 'tenzornaya_psikhometriya.dark.tex',
-  'porokhovoy_paradoks_pwa.tex',  'porokhovoy_paradoks_pwa.dark.tex',
-  'termodinamika_burmaldy.tex',   'termodinamika_burmaldy.dark.tex',
-);
+# Build every real article (light + its .dark wrapper) found in this directory,
+# so a newly added <slug>.tex/<slug>.dark.tex pair is picked up automatically —
+# nothing to add here. template.tex is a scaffold, not a publication, so it's
+# the one name excluded.
+opendir(my $dh, '.') or die "articles/.latexmkrc: can't read articles/: $!";
+@default_files = sort grep { /\.tex$/ && $_ ne 'template.tex' } readdir($dh);
+closedir($dh);
 
 # Keep .synctex.gz out of the way but next to the PDF is fine; the repo
 # .gitignore already excludes all the intermediate files listed below.

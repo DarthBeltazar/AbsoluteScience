@@ -9,26 +9,54 @@ permissions:
   contents: read
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      articles: ${{ steps.filter.outputs.articles }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect article-source changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            articles:
+              - 'articles/**/*.tex'
+              - 'articles/*.sty'
+              - 'articles/.latexmkrc'
+
   build:
+    needs: changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
+      # Compiles every <slug>.tex/<slug>.dark.tex actually present (template.tex
+      # excluded) — a newly added article needs no workflow edit to be picked up.
+      - name: List article root files
+        if: needs.changes.outputs.articles == 'true'
+        id: files
+        working-directory: articles
+        run: |
+          files=$(ls *.tex | grep -v '^template\.tex$')
+          { echo 'list<<EOF'; echo "$files"; echo 'EOF'; } >> "$GITHUB_OUTPUT"
+
       - name: Compile articles (XeLaTeX via latexmk)
+        if: needs.changes.outputs.articles == 'true'
         uses: xu-cheng/latex-action@v3
         with:
           working_directory: articles
-          root_file: |
-            tenzornaya_psikhometriya.tex
-            tenzornaya_psikhometriya.dark.tex
-            termodinamika_burmaldy.tex
-            termodinamika_burmaldy.dark.tex
+          root_file: ${{ steps.files.outputs.list }}
           latexmk_use_xelatex: true
 
       - name: Check index.html is in sync with articles/articles.json
         run: python3 scripts/gen_site.py --check
 
+      # Skipped when nothing article-related changed — the PDFs already
+      # committed in the repo are what gets deployed (see the deploy job).
       - name: Upload compiled PDFs
+        if: needs.changes.outputs.articles == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: pdfs
@@ -36,7 +64,7 @@ jobs:
           if-no-files-found: error
 
   deploy:
-    needs: build
+    needs: [changes, build]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
@@ -48,7 +76,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Only needed when the build job actually recompiled; otherwise the PDFs
+      # already committed in the checkout (verified by an earlier run) are used.
       - name: Get freshly built PDFs
+        if: needs.changes.outputs.articles == 'true'
         uses: actions/download-artifact@v4
         with:
           name: pdfs
@@ -57,7 +88,7 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site/assets _site/articles _site/guide
-          cp index.html _site/
+          cp index.html 404.html favicon.ico robots.txt sitemap.xml _site/
           cp -r assets/. _site/assets/
           cp -r guide/. _site/guide/
           cp articles/*.pdf articles/*.tex _site/articles/

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://darthbeltazar.github.io/AbsoluteScience/sitemap.xml

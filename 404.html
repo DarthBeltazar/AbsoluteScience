@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Материал не найден — Журнал Прикладной Лженауки</title>
+<meta name="robots" content="noindex">
+
+<meta name="theme-color" content="#faf6ee" id="theme-color-meta">
+
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg" media="(prefers-color-scheme: light)" id="favicon-light">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark-dark.svg" media="(prefers-color-scheme: dark)" id="favicon-dark">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('zhpl:theme');
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<style>
+  .not-found{ padding:64px 0 40px; text-align:center; }
+  .not-found .code{
+    font-family:var(--sans); font-size:0.8rem; letter-spacing:0.08em;
+    color:var(--ink-soft); margin:0 0 18px;
+  }
+  .not-found h1{ font-size:1.7rem; margin:0 0 18px; }
+  .not-found p{ max-width:520px; margin:0 auto 14px; }
+  .not-found .btn{ margin-top:10px; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="masthead-top">
+      <picture class="seal">
+        <source srcset="assets/logo-seal-dark.svg" media="(prefers-color-scheme: dark)" id="seal-dark-source">
+        <img src="assets/logo-seal.svg" alt="Печать журнала: Журнал Прикладной Лженауки, Институт Прикладной Метафизики" width="86" height="86">
+      </picture>
+      <div class="masthead-titles">
+        <h1>Журнал Прикладной Лженауки</h1>
+        <p class="affil">Институт Прикладной Метафизики · Кафедра тензорного анализа межличностных отношений</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap not-found">
+    <p class="code">ОШИБКА 404 · РЕЦЕНЗИЯ НЕ ЗАВЕРШЕНА</p>
+    <h1>Запрошенный материал не обнаружен</h1>
+    <p>
+      Страница по этому адресу отсутствует в текущем томе. Это можно
+      объяснить одним из трёх способов: материал не существовал изначально,
+      был отозван редколлегией, либо — согласно принципу баллистической
+      неопределённости — существует, но не в этой системе отсчёта.
+    </p>
+    <p>Рецензент 2 замечаний по данному факту не имеет.</p>
+    <p><a class="btn" href="/AbsoluteScience/">Вернуться к оглавлению номера</a></p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Журнал Прикладной Лженауки · Институт Прикладной Метафизики</p>
+    <p>ISSN 9999-9999 (online, вымышленный) · Рецензент 2 замечаний не имеет</p>
+    <p><a href="https://github.com/DarthBeltazar/AbsoluteScience">github.com/DarthBeltazar/AbsoluteScience</a></p>
+  </div>
+</footer>
+
+<script src="assets/theme.js"></script>
+</body>
+</html>

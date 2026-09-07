@@ -12,15 +12,21 @@
 <meta property="og:description" content="Рецензируемое периодическое издание Института Прикладной Метафизики, публикующее оригинальные исследования на стыке точных и гуманитарных наук.">
 <meta property="og:url" content="https://darthbeltazar.github.io/AbsoluteScience/">
 <meta property="og:locale" content="ru_RU">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://darthbeltazar.github.io/AbsoluteScience/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Журнал Прикладной Лженауки">
 <meta name="twitter:description" content="Рецензируемое периодическое издание Института Прикладной Метафизики.">
+<meta name="twitter:image" content="https://darthbeltazar.github.io/AbsoluteScience/assets/og-image.png">
 
 <meta name="theme-color" content="#faf6ee" id="theme-color-meta">
 
 <link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg" media="(prefers-color-scheme: light)" id="favicon-light">
 <link rel="icon" type="image/svg+xml" href="assets/logo-mark-dark.svg" media="(prefers-color-scheme: dark)" id="favicon-dark">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <script>
 // Применяем сохранённый выбор темы до отрисовки — иначе будет вспышка не той темы.
 (function () {
@@ -274,48 +280,17 @@
   </div>
 </footer>
 
+<script src="assets/theme.js"></script>
 <script>
 (function () {
-  var THEME_KEY = 'zhpl:theme';
+  // Переключение темы сайта живёт в assets/theme.js (общее с 404.html);
+  // здесь используем его через window.ZhplTheme, чтобы PDF-читалка могла
+  // по умолчанию следовать теме сайта.
+  var siteIsDark = window.ZhplTheme.siteIsDark;
 
-  function storedTheme() {
-    try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
-  }
-  function storeTheme(v) {
-    try { localStorage.setItem(THEME_KEY, v); } catch (e) {}
-  }
-  function systemPrefersDark() {
-    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  }
-  // Тема сайта: явный выбор пользователя (кнопка в шапке) перекрывает системную.
-  function siteIsDark() {
-    var t = storedTheme();
-    return t === null ? systemPrefersDark() : t === 'dark';
-  }
-  function applyTheme() {
-    var dark = siteIsDark();
-    var explicit = storedTheme() !== null;
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-    var btn = document.getElementById('theme-toggle-btn');
-    if (btn) {
-      btn.textContent = dark ? '☀️ Светлая тема' : '🌙 Тёмная тема';
-      btn.setAttribute('aria-pressed', dark ? 'true' : 'false');
-    }
-    var meta = document.getElementById('theme-color-meta');
-    if (meta) meta.setAttribute('content', dark ? '#1c1a15' : '#faf6ee');
-    // При явном выборе темы фавикон перестаёт зависеть от системной настройки.
-    var favLight = document.getElementById('favicon-light');
-    var favDark = document.getElementById('favicon-dark');
-    if (favLight && favDark) {
-      favLight.media = explicit ? (dark ? 'not all' : 'all') : '(prefers-color-scheme: light)';
-      favDark.media = explicit ? (dark ? 'all' : 'not all') : '(prefers-color-scheme: dark)';
-    }
-    var sealDark = document.getElementById('seal-dark-source');
-    if (sealDark) sealDark.media = explicit ? (dark ? 'all' : 'not all') : '(prefers-color-scheme: dark)';
-  }
+  var prevToggleTheme = window.toggleTheme;
   window.toggleTheme = function () {
-    storeTheme(siteIsDark() ? 'light' : 'dark');
-    applyTheme();
+    prevToggleTheme();
     // PDF-читалка без собственного явного выбора продолжает следовать теме сайта.
     if (stored() === null) applyPdfDark(pdfDarkOn());
   };
@@ -382,18 +357,15 @@
     }
   };
 
-  // Синхронизируем тему сайта и подписи кнопок с текущим режимом сразу при загрузке.
-  applyTheme();
+  // Синхронизируем подписи кнопок читалки с текущим режимом сразу при загрузке
+  // (тему самой страницы theme.js уже применил).
   applyPdfDark(pdfDarkOn());
 
-  // Пока пользователь не выбрал тему явно — реагируем на смену системной темы.
+  // Пока пользователь не выбрал тему явно — PDF следует за сменой системной темы.
   if (window.matchMedia) {
     try {
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-        if (storedTheme() === null) {
-          applyTheme();
-          if (stored() === null) applyPdfDark(pdfDarkOn());
-        }
+        if (window.ZhplTheme.storedTheme() === null && stored() === null) applyPdfDark(pdfDarkOn());
       });
     } catch (e) {}
   }

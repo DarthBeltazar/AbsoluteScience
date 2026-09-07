@@ -1,0 +1,7 @@
+<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+  <rect width="180" height="180" fill="#faf6ee"/>
+  <g transform="translate(6.67,6.67) scale(1.38889)">
+    <circle cx="60" cy="60" r="54" fill="none" stroke="#2a241c" stroke-width="4"/>
+    <text x="60" y="80" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="bold" font-size="58" fill="#2a241c" text-anchor="middle">R</text>
+  </g>
+</svg>
