@@ -458,6 +458,84 @@ h2.section-title{
 /* Тёмное чтение — не CSS-инверсия, а отдельно собранный PDF
    (articles/<slug>.dark.pdf); читалка подставляет его через data-dark-src. */
 
+/* ---------- Author cards ---------- */
+
+.people-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+  gap:20px;
+}
+
+.person-card{
+  border:1px solid var(--rule);
+  border-radius:8px;
+  background:var(--paper-2);
+  padding:22px 24px;
+}
+
+.person-head{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:14px;
+}
+
+.avatar{
+  flex:0 0 auto;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  border:2px solid var(--ink);
+  background:var(--paper);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:var(--serif);
+  font-style:italic;
+  font-weight:700;
+  font-size:1.15rem;
+}
+
+.person-card h3{
+  margin:0 0 3px;
+  font-size:1.05rem;
+}
+
+.person-card .role{
+  font-family:var(--sans);
+  font-size:0.76rem;
+  color:var(--ink-soft);
+  margin:0;
+}
+
+.person-card .bio{
+  font-size:0.92rem;
+  margin:0 0 12px;
+}
+
+.person-card .orcid{
+  font-family:var(--sans);
+  font-size:0.76rem;
+  color:var(--ink-soft);
+  margin:0 0 12px;
+}
+
+.person-card .metrics{
+  font-family:var(--sans);
+  font-size:0.78rem;
+  color:var(--ink-soft);
+  border-top:1px solid var(--rule);
+  padding-top:10px;
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+.person-card .metrics strong{
+  color:var(--ink);
+  font-family:var(--serif);
+}
+
 /* ---------- For authors ---------- */
 
 .checklist{
@@ -490,6 +568,7 @@ footer a{color:var(--ink-soft);}
 @media (max-width:600px){
   .masthead-titles h1{font-size:1.6rem;}
   .article{padding:20px 18px;}
+  .person-card{padding:18px 20px;}
 }
 
 /* ---------- Print: чистое оглавление номера ---------- */
@@ -509,7 +588,8 @@ footer a{color:var(--ink-soft);}
   a{ color:#000; text-decoration:none; }
   section{ margin-bottom:24px; }
   .article,
-  .stat{
+  .stat,
+  .person-card{
     background:none;
     border:0;
     border-top:1px solid var(--rule);
@@ -518,5 +598,6 @@ footer a{color:var(--ink-soft);}
   }
   .highlights,
   .cite-box{ background:none; border:0; padding-left:0; }
-  .article{ break-inside:avoid; }
+  .article,
+  .person-card{ break-inside:avoid; }
 }
