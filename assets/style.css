@@ -40,6 +40,46 @@
   }
 }
 
+/* Ручной переключатель темы (кнопка в шапке) — атрибут на <html> перекрывает
+   system prefers-color-scheme за счёт более специфичного селектора. */
+:root[data-theme="dark"]{
+  --paper:#1c1a15;
+  --paper-2:#26231c;
+  --ink:#eae3d2;
+  --ink-soft:#b3a88f;
+  --rule:#3a352b;
+  --red:#e08a7f;
+  --red-bg:#3a2320;
+  --blue:#8fb4de;
+  --blue-bg:#1f2a38;
+  --green:#8fc2a3;
+  --green-bg:#1e2c23;
+  --yellow-bg:#332d18;
+  --gray-bg:#272420;
+  --btn-fg:#1c1a15;
+  --reader-mat:#211f19;
+  --reader-page:#1c1a15;
+}
+
+:root[data-theme="light"]{
+  --paper:#faf6ee;
+  --paper-2:#f2ecdd;
+  --ink:#2a241c;
+  --ink-soft:#5b5344;
+  --rule:#d8cdb4;
+  --red:#8c2f2f;
+  --red-bg:#f7e9e6;
+  --blue:#2c4a73;
+  --blue-bg:#e9eff6;
+  --green:#3c6b4f;
+  --green-bg:#e7f1ea;
+  --yellow-bg:#fbf3d6;
+  --gray-bg:#f0eee7;
+  --btn-fg:#faf6ee;
+  --reader-mat:#e7e2d4;
+  --reader-page:#ffffff;
+}
+
 *{box-sizing:border-box;}
 
 html{background:var(--paper);}
@@ -138,6 +178,23 @@ nav.top-nav a{
 nav.top-nav a:hover{
   color:var(--red);
   border-bottom-color:var(--red);
+}
+
+.theme-toggle{
+  margin-left:auto;
+  font-family:inherit;
+  font-size:inherit;
+  cursor:pointer;
+  background:none;
+  border:1px solid var(--rule);
+  border-radius:4px;
+  color:var(--ink);
+  padding:4px 10px;
+  line-height:1.4;
+}
+.theme-toggle:hover{
+  color:var(--red);
+  border-color:var(--red);
 }
 
 /* ---------- Sections ---------- */
@@ -438,7 +495,8 @@ footer a{color:var(--ink-soft);}
 /* ---------- Print: чистое оглавление номера ---------- */
 
 @media print{
-  :root{
+  /* :root[data-theme] нужен, чтобы перебить более специфичный ручной выбор темы (кнопка в шапке). */
+  :root, :root[data-theme]{
     --paper:#fff; --paper-2:#fff;
     --ink:#000; --ink-soft:#333; --rule:#bbb;
   }
