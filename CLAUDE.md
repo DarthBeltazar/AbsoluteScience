@@ -32,7 +32,9 @@ humor comes from real, physically-meaningful math applied to a trivial subject.
   An entry with `"hidden": true` is skipped by the generator (excluded from `#issue` cards and
   the article-count stat) while its `.tex`/`.pdf` stay in the repo and reachable by direct URL —
   use this to unpublish/draft an article without deleting its files.
-- `articles/.latexmkrc` — makes `latexmk` use XeLaTeX and build both articles.
+- `articles/.latexmkrc` — makes `latexmk` use XeLaTeX and auto-discovers every `*.tex` in
+  `articles/` to build (excluding `template.tex`) — a new `<slug>.tex`/`<slug>.dark.tex` pair
+  is picked up with no edit needed here.
 - `scripts/gen_site.py` — regenerates the `#issue` cards and stat counters in `index.html`, and
   rewrites `sitemap.xml`, from `articles.json`; touches only the marked regions of `index.html`.
   `--check` fails if either file is out of date.
@@ -63,10 +65,20 @@ humor comes from real, physically-meaningful math applied to a trivial subject.
   one entry per non-hidden article's PDF) — don't hand-edit it, same rule as the `index.html`
   generated regions.
 - `Makefile` / `build.ps1` — `make` / `.\build.ps1` builds articles then the site.
-- `.github/workflows/build.yml` — CI: compiles PDFs, runs `gen_site.py --check`, deploys the
-  site to GitHub Pages on `main`. The deploy step copies root files (`index.html`, `404.html`,
-  `favicon.ico`, `robots.txt`, `sitemap.xml`) and the `assets/`/`guide/`/`articles/` directories
-  into `_site` explicitly — a new root-level file needs to be added there too, or it won't ship.
+- `.github/workflows/build.yml` — CI, three jobs:
+  - `changes` uses `dorny/paths-filter` to check whether any `articles/**/*.tex`, `articles/*.sty`
+    or `articles/.latexmkrc` changed.
+  - `build` compiles PDFs (root-file list computed at runtime as "every `*.tex` in `articles/`
+    except `template.tex`" — a new article needs no workflow edit) and uploads them as an
+    artifact, but only when `changes` found article-source edits; it always runs
+    `gen_site.py --check` regardless. This is the compile-skip: a push touching only
+    `index.html`/`assets/`/docs/etc. skips the (slow) LaTeX build entirely.
+  - `deploy` downloads the freshly built PDF artifact only when the build job actually
+    compiled; otherwise it deploys the PDFs already sitting in the checkout (correct, since
+    nothing article-related changed since they were last verified). It copies root files
+    (`index.html`, `404.html`, `favicon.ico`, `robots.txt`, `sitemap.xml`) and the
+    `assets`/`guide`/`articles` directories into `_site` explicitly — a new root-level file
+    needs to be added there too, or it won't ship.
 
 ## Building an article
 
