@@ -1,0 +1,54 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#faf6ee"/>
+
+  <!-- "двойное" правило сверху/снизу — как border:3px double у шапки/подвала сайта -->
+  <rect x="0" y="0" width="1200" height="2" fill="#2a241c"/>
+  <rect x="0" y="5" width="1200" height="1.2" fill="#2a241c"/>
+  <rect x="0" y="622.8" width="1200" height="1.2" fill="#2a241c"/>
+  <rect x="0" y="628" width="1200" height="2" fill="#2a241c"/>
+
+  <!-- Печать журнала (см. logo-seal.svg), вписана как есть -->
+  <g transform="translate(90,145) scale(1.41667)">
+    <circle cx="120" cy="120" r="114" fill="none" stroke="#2a241c" stroke-width="3"/>
+    <circle cx="120" cy="120" r="84" fill="none" stroke="#2a241c" stroke-width="1.2"/>
+    <path id="ogTopArc" d="M 27.95 95.33 A 95.3 95.3 0 0 1 212.05 95.33" fill="none"/>
+    <path id="ogBotArc" d="M 212.05 144.67 A 95.3 95.3 0 0 1 27.95 144.67" fill="none"/>
+    <text font-family="Georgia, 'Times New Roman', serif" font-size="10" letter-spacing="2.1" fill="#2a241c">
+      <textPath href="#ogTopArc" startOffset="50%" text-anchor="middle">ЖУРНАЛ ПРИКЛАДНОЙ ЛЖЕНАУКИ</textPath>
+    </text>
+    <text font-family="Georgia, 'Times New Roman', serif" font-size="10" letter-spacing="1" fill="#2a241c">
+      <textPath href="#ogBotArc" startOffset="50%" text-anchor="middle">ИНСТИТУТ ПРИКЛАДНОЙ МЕТАФИЗИКИ</textPath>
+    </text>
+    <circle cx="21" cy="120" r="2" fill="#2a241c"/>
+    <circle cx="219" cy="120" r="2" fill="#2a241c"/>
+    <g transform="translate(120,106) scale(1.3) translate(-120,-120)">
+      <text x="88" y="140" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="56" fill="#2a241c">R</text>
+      <text x="134" y="104" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="20" fill="#2a241c">&#961;</text>
+      <text x="134" y="150" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="18" fill="#2a241c">&#963;&#956;&#957;</text>
+      <line x1="78" y1="158" x2="162" y2="158" stroke="#2a241c" stroke-width="0.8"/>
+      <text x="120" y="172" font-family="Georgia, 'Times New Roman', serif" font-size="9" letter-spacing="1.5" fill="#5b5344" text-anchor="middle">MMXXVI</text>
+    </g>
+  </g>
+
+  <!-- Заголовок и служебная информация -->
+  <text x="480" y="250" font-family="Georgia, 'Times New Roman', serif" font-size="50" font-weight="700" fill="#2a241c">ЖУРНАЛ ПРИКЛАДНОЙ</text>
+  <text x="480" y="308" font-family="Georgia, 'Times New Roman', serif" font-size="50" font-weight="700" fill="#2a241c">ЛЖЕНАУКИ</text>
+
+  <text x="480" y="344" font-family="'Trebuchet MS', 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" fill="#5b5344">Институт Прикладной Метафизики</text>
+
+  <line x1="480" y1="366" x2="1140" y2="366" stroke="#d8cdb4" stroke-width="1"/>
+
+  <g font-family="'Trebuchet MS', 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" letter-spacing="0.4">
+    <rect x="480" y="384" width="300" height="30" rx="4" fill="#f7e9e6" stroke="#8c2f2f" stroke-width="1.2"/>
+    <text x="630" y="404" text-anchor="middle" fill="#8c2f2f">ПРОРЫВНЫЕ ИССЛЕДОВАНИЯ</text>
+
+    <rect x="792" y="384" width="176" height="30" rx="4" fill="#e9eff6" stroke="#2c4a73" stroke-width="1.2"/>
+    <text x="880" y="404" text-anchor="middle" fill="#2c4a73">IMPACT FACTOR: ∞</text>
+
+    <rect x="980" y="384" width="164" height="30" rx="4" fill="#e7f1ea" stroke="#3c6b4f" stroke-width="1.2"/>
+    <text x="1062" y="404" text-anchor="middle" fill="#3c6b4f">ОТКРЫТЫЙ ДОСТУП</text>
+  </g>
+
+  <text x="480" y="466" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="23" fill="#5b5344">Строгость метода не зависит от природы объекта,</text>
+  <text x="480" y="498" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="23" fill="#5b5344">к которому он применяется.</text>
+</svg>
