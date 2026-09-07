@@ -16,12 +16,20 @@
 <meta name="twitter:title" content="Журнал Прикладной Лженауки">
 <meta name="twitter:description" content="Рецензируемое периодическое издание Института Прикладной Метафизики.">
 
-<meta name="theme-color" content="#faf6ee" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1c1a15" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#faf6ee" id="theme-color-meta">
 
 <link rel="stylesheet" href="assets/style.css">
-<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg" media="(prefers-color-scheme: light)">
-<link rel="icon" type="image/svg+xml" href="assets/logo-mark-dark.svg" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg" media="(prefers-color-scheme: light)" id="favicon-light">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark-dark.svg" media="(prefers-color-scheme: dark)" id="favicon-dark">
+<script>
+// Применяем сохранённый выбор темы до отрисовки — иначе будет вспышка не той темы.
+(function () {
+  try {
+    var t = localStorage.getItem('zhpl:theme');
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
 </head>
 <body>
 
@@ -29,7 +37,7 @@
   <div class="wrap">
     <div class="masthead-top">
       <picture class="seal">
-        <source srcset="assets/logo-seal-dark.svg" media="(prefers-color-scheme: dark)">
+        <source srcset="assets/logo-seal-dark.svg" media="(prefers-color-scheme: dark)" id="seal-dark-source">
         <img src="assets/logo-seal.svg" alt="Печать журнала: Журнал Прикладной Лженауки, Институт Прикладной Метафизики" width="86" height="86">
       </picture>
       <div class="masthead-titles">
@@ -49,6 +57,7 @@
       <a href="#issue">Текущий номер</a>
       <a href="#authors">Для авторов</a>
       <a href="https://github.com/DarthBeltazar/AbsoluteScience">Репозиторий</a>
+      <button type="button" class="theme-toggle" id="theme-toggle-btn" aria-pressed="false" onclick="toggleTheme()">🌙 Тёмная тема</button>
     </nav>
   </div>
 </header>
@@ -267,6 +276,50 @@
 
 <script>
 (function () {
+  var THEME_KEY = 'zhpl:theme';
+
+  function storedTheme() {
+    try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
+  }
+  function storeTheme(v) {
+    try { localStorage.setItem(THEME_KEY, v); } catch (e) {}
+  }
+  function systemPrefersDark() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+  // Тема сайта: явный выбор пользователя (кнопка в шапке) перекрывает системную.
+  function siteIsDark() {
+    var t = storedTheme();
+    return t === null ? systemPrefersDark() : t === 'dark';
+  }
+  function applyTheme() {
+    var dark = siteIsDark();
+    var explicit = storedTheme() !== null;
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    var btn = document.getElementById('theme-toggle-btn');
+    if (btn) {
+      btn.textContent = dark ? '☀️ Светлая тема' : '🌙 Тёмная тема';
+      btn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+    }
+    var meta = document.getElementById('theme-color-meta');
+    if (meta) meta.setAttribute('content', dark ? '#1c1a15' : '#faf6ee');
+    // При явном выборе темы фавикон перестаёт зависеть от системной настройки.
+    var favLight = document.getElementById('favicon-light');
+    var favDark = document.getElementById('favicon-dark');
+    if (favLight && favDark) {
+      favLight.media = explicit ? (dark ? 'not all' : 'all') : '(prefers-color-scheme: light)';
+      favDark.media = explicit ? (dark ? 'all' : 'not all') : '(prefers-color-scheme: dark)';
+    }
+    var sealDark = document.getElementById('seal-dark-source');
+    if (sealDark) sealDark.media = explicit ? (dark ? 'all' : 'not all') : '(prefers-color-scheme: dark)';
+  }
+  window.toggleTheme = function () {
+    storeTheme(siteIsDark() ? 'light' : 'dark');
+    applyTheme();
+    // PDF-читалка без собственного явного выбора продолжает следовать теме сайта.
+    if (stored() === null) applyPdfDark(pdfDarkOn());
+  };
+
   var KEY = 'zhpl:pdfDark';
 
   function stored() {
@@ -275,13 +328,10 @@
   function store(v) {
     try { localStorage.setItem(KEY, v); } catch (e) {}
   }
-  function prefersDark() {
-    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  }
   // По умолчанию следуем теме сайта; явный выбор пользователя её перекрывает.
   function pdfDarkOn() {
     var s = stored();
-    return s === null ? prefersDark() : s === '1';
+    return s === null ? siteIsDark() : s === '1';
   }
   // Для каждой статьи есть два PDF: обычный (data-src) и тёмный (data-dark-src).
   function readerSrc(frame, on) {
@@ -332,14 +382,18 @@
     }
   };
 
-  // Синхронизируем подписи кнопок с текущим режимом сразу при загрузке.
+  // Синхронизируем тему сайта и подписи кнопок с текущим режимом сразу при загрузке.
+  applyTheme();
   applyPdfDark(pdfDarkOn());
 
-  // Пока пользователь не выбрал режим явно — реагируем на смену системной темы.
+  // Пока пользователь не выбрал тему явно — реагируем на смену системной темы.
   if (window.matchMedia) {
     try {
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-        if (stored() === null) applyPdfDark(prefersDark());
+        if (storedTheme() === null) {
+          applyTheme();
+          if (stored() === null) applyPdfDark(pdfDarkOn());
+        }
       });
     } catch (e) {}
   }
