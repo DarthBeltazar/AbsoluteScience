@@ -88,7 +88,7 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site/assets _site/articles _site/guide
-          cp index.html 404.html favicon.ico robots.txt sitemap.xml _site/
+          cp index.html 404.html favicon.ico robots.txt sitemap.xml feed.xml _site/
           cp -r assets/. _site/assets/
           cp -r guide/. _site/guide/
           cp articles/*.pdf articles/*.tex articles/*.html _site/articles/

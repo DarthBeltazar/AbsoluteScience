@@ -22,6 +22,7 @@
 
 <meta name="theme-color" content="#faf6ee" id="theme-color-meta">
 
+<link rel="alternate" type="application/rss+xml" title="Журнал Прикладной Лженауки — RSS" href="feed.xml">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg" media="(prefers-color-scheme: light)" id="favicon-light">
@@ -64,6 +65,7 @@
       <a href="#people">Авторы</a>
       <a href="#authors">Для авторов</a>
       <a href="https://github.com/DarthBeltazar/AbsoluteScience">Репозиторий</a>
+      <a href="feed.xml" class="rss-link">RSS</a>
       <button type="button" class="theme-toggle" id="theme-toggle-btn" aria-pressed="false" onclick="toggleTheme()">🌙 Тёмная тема</button>
     </nav>
   </div>
@@ -99,8 +101,14 @@
       <h2 class="section-title">Текущий номер</h2>
       <p class="issue-heading"><!-- ISSUE-HEADING -->Том 1 · 2026<!-- /ISSUE-HEADING --></p>
 
+      <p class="kw-filter-status" id="kw-filter-status" hidden>
+        Показаны статьи с тегом «<span class="kw-filter-term"></span>»
+        (<span class="kw-filter-count"></span>) —
+        <button type="button" class="link-btn" onclick="clearKeywordFilter()">сбросить</button>
+      </p>
+
       <!-- ARTICLES:START -->
-      <article class="article">
+      <article class="article" data-keywords="тензорный анализ|ковариантность|психометрика|скаляр Кречмана|предвзятость|лженаука">
         <p class="article-kicker">Журнал Прикладной Лженауки · 1(1) · 2026</p>
         <h3><a href="articles/tenzornaya_psikhometriya.html">К обоснованию тензорного анализа личности:<br>
         инвариантная психометрика в искривлённых пространствах характера</a></h3>
@@ -114,7 +122,7 @@
         </ul>
 
         <p class="keywords">
-          <span class="kw">тензорный анализ</span><span class="kw">ковариантность</span><span class="kw">психометрика</span><span class="kw">скаляр Кречмана</span><span class="kw">предвзятость</span><span class="kw">лженаука</span>
+          <button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">тензорный анализ</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">ковариантность</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">психометрика</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">скаляр Кречмана</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">предвзятость</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">лженаука</button>
         </p>
 
         <div class="article-actions">
@@ -123,7 +131,7 @@
         </div>
       </article>
 
-      <article class="article">
+      <article class="article" data-keywords="внутренняя баллистика|адиабатическое расширение|запирающий элемент|теория поиска|принцип баллистической неопределённости|лексическая термометрия|лженаука">
         <p class="article-kicker">Журнал Прикладной Лженауки · 1(2) · 2026</p>
         <h3><a href="articles/porokhovoy_paradoks_pwa.html">Пороховой парадокс трубы с пробкой:<br>
         адиабатическая внутренняя баллистика изделия PWA, теорема о невозвратности снаряда и лексическая термометрия оператора</a></h3>
@@ -138,7 +146,7 @@
         </ul>
 
         <p class="keywords">
-          <span class="kw">внутренняя баллистика</span><span class="kw">адиабатическое расширение</span><span class="kw">запирающий элемент</span><span class="kw">теория поиска</span><span class="kw">принцип баллистической неопределённости</span><span class="kw">лексическая термометрия</span><span class="kw">лженаука</span>
+          <button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">внутренняя баллистика</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">адиабатическое расширение</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">запирающий элемент</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">теория поиска</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">принцип баллистической неопределённости</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">лексическая термометрия</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">лженаука</button>
         </p>
 
         <div class="article-actions">
@@ -147,7 +155,7 @@
         </div>
       </article>
 
-      <article class="article">
+      <article class="article" data-keywords="статистическая механика компаний|второе начало общественной термодинамики|бурмалдическое равновесие|демон Бурмалды|энтропия веселья|лженаука">
         <p class="article-kicker">Журнал Прикладной Лженауки · 1(3) · 2026</p>
         <h3><a href="articles/termodinamika_burmaldy.html">К термодинамическому обоснованию бурмалды:<br>
         экстенсивная величина, монотонно неубывающая в замкнутой компании</a></h3>
@@ -162,7 +170,7 @@
         </ul>
 
         <p class="keywords">
-          <span class="kw">статистическая механика компаний</span><span class="kw">второе начало общественной термодинамики</span><span class="kw">бурмалдическое равновесие</span><span class="kw">демон Бурмалды</span><span class="kw">энтропия веселья</span><span class="kw">лженаука</span>
+          <button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">статистическая механика компаний</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">второе начало общественной термодинамики</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">бурмалдическое равновесие</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">демон Бурмалды</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">энтропия веселья</button><button type="button" class="kw" aria-pressed="false" onclick="toggleKeywordFilter(this)">лженаука</button>
         </p>
 
         <div class="article-actions">
@@ -283,5 +291,6 @@
 </footer>
 
 <script src="assets/theme.js"></script>
+<script src="assets/filter.js"></script>
 </body>
 </html>

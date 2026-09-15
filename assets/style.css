@@ -261,6 +261,29 @@ h2.section-title{
   letter-spacing:0.03em;
 }
 
+.link-btn{
+  background:none;
+  border:0;
+  padding:0;
+  font:inherit;
+  color:var(--blue);
+  text-decoration:underline;
+  cursor:pointer;
+}
+.link-btn:hover{color:var(--red);}
+
+.kw-filter-status{
+  font-family:var(--sans);
+  font-size:0.85rem;
+  color:var(--ink-soft);
+  background:var(--paper-2);
+  border:1px solid var(--rule);
+  border-radius:6px;
+  padding:8px 14px;
+  margin:0 0 18px;
+}
+.kw-filter-status .kw-filter-term{font-weight:700; color:var(--ink);}
+
 .article{
   border:1px solid var(--rule);
   border-radius:8px;
@@ -344,6 +367,23 @@ h2.section-title{
   border-radius:20px;
   padding:2px 11px;
   margin:0 6px 6px 0;
+}
+
+/* На главной .kw — кнопка клиентского фильтра тизеров (assets/filter.js); на
+   странице самой статьи — обычный <span>, фильтровать там нечего. Общий вид
+   тега общий (см. правило выше); ниже — только то, что нужно кнопке. */
+.keywords button.kw{
+  font:inherit;
+  cursor:pointer;
+}
+.keywords button.kw:hover{
+  border-color:var(--blue);
+  color:var(--blue);
+}
+.keywords button.kw[aria-pressed="true"]{
+  background:var(--blue);
+  border-color:var(--blue);
+  color:var(--btn-fg);
 }
 
 .cite-box{
@@ -611,7 +651,10 @@ footer a{color:var(--ink-soft);}
   nav.top-nav,
   .badges,
   .article-actions,
+  .kw-filter-status,
   .pdf-reader-wrap{ display:none !important; }
+  /* Печать игнорирует активный на экране фильтр по тегу — печатается весь номер. */
+  #issue .article[hidden]{ display:block !important; }
   header.masthead{ background:none; padding:12px 0; }
   a{ color:#000; text-decoration:none; }
   section{ margin-bottom:24px; }

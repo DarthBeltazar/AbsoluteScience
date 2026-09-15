@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Пересобрать блок «Текущий номер», счётчики в index.html, страницы отдельных
-статей и sitemap.xml из articles/articles.json.
+статей, sitemap.xml и feed.xml из articles/articles.json.
 
-articles.json — единственный источник правды по метаданным статей и авторов.
-Сайт их больше не хранит вручную. Статья с "hidden": true пропускается: не
-попадает в тизеры на главной, в счётчик и в sitemap.xml, но её .tex/.pdf/.html
+articles.json — единственный источник правды по метаданным статей, авторов
+(people) и издания (journal). Сайт их больше не хранит вручную. Статья с
+"hidden": true пропускается: не попадает в тизеры на главной, в счётчик,
+в счётчики авторов, в sitemap.xml и в feed.xml, но её .tex/.pdf/.html
 остаются в репозитории и доступны по прямой ссылке (страница помечается
 noindex). В index.html скрипт трогает только области между маркерами:
 
@@ -19,11 +20,16 @@ noindex). В index.html скрипт трогает только области 
 
 Каждой статье (включая скрытые) генерируется полноценная страница
 articles/<slug>.html с полным текстом, вложенной PDF-читалкой и своими
-og:title/og:description — она перезаписывается целиком, как и sitemap.xml.
-Остальная разметка index.html не изменяется.
+og:title/og:description — она перезаписывается целиком, как и sitemap.xml
+и feed.xml. Остальная разметка index.html не изменяется.
+
+Авторы статьи задаются как "authorIds": ["id", ...] — список id из
+articles.json → people, в порядке отображения. Строка «Имя, Имя — Институт»
+собирается генератором (people[].name + journal.affiliation), а не хранится
+руками — так же, как и счётчик статей на автора в карточках #people.
 
 Использование:
-    python scripts/gen_site.py            # переписать index.html, articles/*.html и sitemap.xml
+    python scripts/gen_site.py            # переписать index.html, articles/*.html, sitemap.xml, feed.xml
     python scripts/gen_site.py --check    # не писать; код возврата 1, если файлы устарели
 """
 from __future__ import annotations
@@ -33,12 +39,15 @@ import html
 import json
 import re
 import sys
+from datetime import datetime, timezone
+from email.utils import format_datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "articles" / "articles.json"
 INDEX = ROOT / "index.html"
 SITEMAP = ROOT / "sitemap.xml"
+FEED = ROOT / "feed.xml"
 ARTICLES_DIR = ROOT / "articles"
 BASE_URL = "https://darthbeltazar.github.io/AbsoluteScience/"
 
@@ -88,26 +97,62 @@ def visible_articles(manifest: dict) -> list[dict]:
     return [a for a in manifest["articles"] if not a.get("hidden")]
 
 
+# ---------- Авторы (people[] + authorIds → строка «Имя, Имя — Институт») ----------
+
+def people_by_id(manifest: dict) -> dict[str, dict]:
+    return {p["id"]: p for p in manifest.get("people", [])}
+
+
+def authors_html(art: dict, manifest: dict) -> str:
+    """Собрать «Имя 1, Имя 2 — Институт» из authorIds + journal.affiliation.
+    Порядок — как в authorIds (не обязательно как в people[])."""
+    people = people_by_id(manifest)
+    names = [html.escape(people[pid]["name"]) for pid in art["authorIds"]]
+    affiliation = manifest.get("journal", {}).get("affiliation", "")
+    line = ", ".join(names)
+    if affiliation:
+        line += f" — {html.escape(affiliation)}"
+    return line
+
+
+# ---------- Ключевые слова ----------
+
+def render_keywords(keywords: list[str], *, interactive: bool) -> str:
+    """interactive=True — кликабельные кнопки для фильтра тизеров на главной
+    (см. assets/filter.js); interactive=False — статичные бейджи на странице
+    самой статьи (там фильтровать нечего)."""
+    if not interactive:
+        return "".join(
+            f'<span class="kw">{html.escape(k)}</span>' for k in keywords
+        )
+    return "".join(
+        f'<button type="button" class="kw" aria-pressed="false" '
+        f'onclick="toggleKeywordFilter(this)">{html.escape(k)}</button>'
+        for k in keywords
+    )
+
+
 # ---------- Тизер статьи на главной ----------
 
-def render_teaser(art: dict) -> str:
+def render_teaser(art: dict, manifest: dict) -> str:
     """Краткая карточка статьи для «Текущего номера» — полный текст, аннотация
-    и читалка живут на отдельной странице статьи (см. render_article_page)."""
+    и читалка живут на отдельной странице статьи (см. render_article_page).
+    data-keywords на самой <article> — список ключевых слов для клиентского
+    фильтра (assets/filter.js), без разметки, разделитель "|"."""
     kicker = html.escape(art["kicker"])
     title_html = art["titleHtml"]  # намеренно содержит <br>, вставляется как есть
-    authors = html.escape(art["authors"])
+    authors = authors_html(art, manifest)
     art_id = art["id"]
     page = f"articles/{art_id}.html"
     pdf = f"articles/{art_id}.pdf"
+    data_keywords = html.escape("|".join(art["keywords"]))
 
     highlights = "\n".join(
         f"          <li>{h}</li>" for h in art["highlights"]  # <em>/<sub> допускаются
     )
-    keywords = "".join(
-        f'<span class="kw">{html.escape(k)}</span>' for k in art["keywords"]
-    )
+    keywords = render_keywords(art["keywords"], interactive=True)
 
-    return f"""      <article class="article">
+    return f"""      <article class="article" data-keywords="{data_keywords}">
         <p class="article-kicker">{kicker}</p>
         <h3><a href="{page}">{title_html}</a></h3>
         <p class="authors">{authors}</p>
@@ -128,19 +173,19 @@ def render_teaser(art: dict) -> str:
 
 
 def render_articles(manifest: dict) -> str:
-    blocks = [render_teaser(art) for art in visible_articles(manifest)]
+    blocks = [render_teaser(art, manifest) for art in visible_articles(manifest)]
     return "\n\n".join(blocks)
 
 
 # ---------- Полный текст статьи (используется только на её отдельной странице) ----------
 
-def render_article_body(art: dict) -> str:
+def render_article_body(art: dict, manifest: dict) -> str:
     """Полная карточка статьи: аннотация, highlights, ключевые слова, cite-box,
     кнопки и встроенная PDF-читалка. Пути — относительно articles/<slug>.html,
     т.е. без префикса "articles/"."""
     kicker = html.escape(art["kicker"])
     title_html = art["titleHtml"]
-    authors = html.escape(art["authors"])
+    authors = authors_html(art, manifest)
     abstract = html.escape(art["abstract"])
     cite_html = art["citeHtml"]    # содержит <em>, как есть
     doi = html.escape(art["doi"])
@@ -156,9 +201,7 @@ def render_article_body(art: dict) -> str:
     highlights = "\n".join(
         f"          <li>{h}</li>" for h in art["highlights"]
     )
-    keywords = "".join(
-        f'<span class="kw">{html.escape(k)}</span>' for k in art["keywords"]
-    )
+    keywords = render_keywords(art["keywords"], interactive=False)
 
     return f"""      <article class="article">
         <p class="article-kicker">{kicker}</p>
@@ -202,7 +245,7 @@ def render_article_body(art: dict) -> str:
       </article>"""
 
 
-def render_article_page(art: dict) -> str:
+def render_article_page(art: dict, manifest: dict) -> str:
     """Полная HTML-страница articles/<slug>.html: та же шапка/подвал, что на
     главной, плюс полный текст одной статьи. Генерируется и для скрытых
     статей (noindex), чтобы прямая ссылка продолжала работать."""
@@ -213,7 +256,7 @@ def render_article_page(art: dict) -> str:
     robots = (
         '\n<meta name="robots" content="noindex">' if art.get("hidden") else ""
     )
-    body = render_article_body(art)
+    body = render_article_body(art, manifest)
 
     return f"""<!DOCTYPE html>
 <html lang="ru">
@@ -306,25 +349,25 @@ def render_article_page(art: dict) -> str:
 def render_article_pages(manifest: dict) -> dict[str, str]:
     """{articles/<slug>.html: содержимое} для КАЖДОЙ статьи, включая скрытые."""
     return {
-        f"articles/{art['id']}.html": render_article_page(art)
+        f"articles/{art['id']}.html": render_article_page(art, manifest)
         for art in manifest["articles"]
     }
 
 
 # ---------- Счётчики статей у авторов (карточки #people) ----------
 
-def person_article_count(person_name: str, articles: list[dict]) -> int:
-    return sum(1 for a in articles if person_name in a["authors"])
+def person_article_count(person_id: str, articles: list[dict]) -> int:
+    return sum(1 for a in articles if person_id in a["authorIds"])
 
 
 def render_people_stats(manifest: dict, text: str) -> str:
     """Подставить в карточки #people число статей на автора — считается из
-    articles.json (совпадение полного имени в поле "authors"), а не хранится
-    руками: раньше это число надо было чинить отдельным коммитом каждый раз,
-    когда статью скрывали/публиковали."""
+    articles.json (членство person.id в authorIds каждой видимой статьи), а
+    не хранится руками: раньше это число надо было чинить отдельным коммитом
+    каждый раз, когда статью скрывали/публиковали."""
     articles = visible_articles(manifest)
     for person in manifest.get("people", []):
-        count = person_article_count(person["name"], articles)
+        count = person_article_count(person["id"], articles)
         word = ru_count(count, "статья", "статьи", "статей")
         inner = f"<strong>{count}</strong> {word}"
         text = replace_region(text, f"STAT:person:{person['id']}", inner, block=False)
@@ -347,6 +390,66 @@ def render_sitemap(manifest: dict) -> str:
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         f"{entries}\n"
         "</urlset>\n"
+    )
+
+
+# ---------- feed.xml (RSS 2.0) ----------
+
+def rfc822(date_str: str) -> str:
+    """"YYYY-MM-DD" → RFC 822 (требуется для RSS pubDate). Время не хранится
+    в articles.json (не бывает нужно точнее дня) — берём полночь UTC."""
+    dt = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+    return format_datetime(dt, usegmt=True)
+
+
+def render_feed(manifest: dict) -> str:
+    """feed.xml: RSS 2.0, новые статьи сверху. Порядок — по убыванию номера
+    выпуска (issue), а не по полю "date": issue уже однозначно отражает
+    редакционный порядок публикации, тогда как дата — это дата написания
+    текста и у переставленной при вёрстке статьи может её не отражать
+    (см. историю «К термодинамическому обоснованию бурмалды», issue 2 → 3)."""
+    articles = sorted(visible_articles(manifest), key=lambda a: a["issue"], reverse=True)
+    items = []
+    for art in articles:
+        short = short_title(art["titleHtml"])
+        link = f"{BASE_URL}articles/{art['id']}.html"
+        description = html.escape(truncate(plain_text(art["abstract"]), limit=500))
+        authors = ", ".join(
+            people_by_id(manifest)[pid]["name"] for pid in art["authorIds"]
+        )
+        items.append(
+            "  <item>\n"
+            f"    <title>{html.escape(short)}</title>\n"
+            f"    <link>{link}</link>\n"
+            f"    <guid isPermaLink=\"true\">{link}</guid>\n"
+            f"    <pubDate>{rfc822(art['date'])}</pubDate>\n"
+            f"    <author>{html.escape(authors)}</author>\n"
+            f"    <description>{description}</description>\n"
+            "  </item>"
+        )
+    entries = "\n".join(items)
+    journal = manifest.get("journal", {})
+    # Самая поздняя дата по всем статьям — НЕ дата articles[0] (та отсортирована
+    # по issue, а issue и date не обязаны совпадать по порядку, см. docstring).
+    last_build = (
+        rfc822(max(a["date"] for a in articles))
+        if articles
+        else rfc822(f"{journal.get('year', 2026)}-01-01")
+    )
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<rss version="2.0">\n'
+        "<channel>\n"
+        "  <title>Журнал Прикладной Лженауки</title>\n"
+        f"  <link>{BASE_URL}</link>\n"
+        "  <description>Рецензируемое периодическое издание Института Прикладной "
+        "Метафизики, публикующее оригинальные исследования на стыке точных и "
+        "гуманитарных наук.</description>\n"
+        "  <language>ru</language>\n"
+        f"  <lastBuildDate>{last_build}</lastBuildDate>\n"
+        f"{entries}\n"
+        "</channel>\n"
+        "</rss>\n"
     )
 
 
@@ -406,6 +509,9 @@ def main() -> int:
     current_sitemap = SITEMAP.read_text(encoding="utf-8") if SITEMAP.exists() else None
     updated_sitemap = render_sitemap(manifest)
 
+    current_feed = FEED.read_text(encoding="utf-8") if FEED.exists() else None
+    updated_feed = render_feed(manifest)
+
     updated_pages = render_article_pages(manifest)
     stale_pages = []
     for rel_path, content in updated_pages.items():
@@ -416,9 +522,10 @@ def main() -> int:
 
     index_stale = updated_index != current_index
     sitemap_stale = updated_sitemap != current_sitemap
+    feed_stale = updated_feed != current_feed
 
-    if not index_stale and not sitemap_stale and not stale_pages:
-        print("index.html, articles/*.html и sitemap.xml уже синхронны с articles/articles.json")
+    if not index_stale and not sitemap_stale and not feed_stale and not stale_pages:
+        print("index.html, articles/*.html, sitemap.xml и feed.xml уже синхронны с articles/articles.json")
         return 0
 
     if args.check:
@@ -428,6 +535,8 @@ def main() -> int:
             print(f"{path.relative_to(ROOT)} устарел: запустите `python scripts/gen_site.py`", file=sys.stderr)
         if sitemap_stale:
             print("sitemap.xml устарел: запустите `python scripts/gen_site.py`", file=sys.stderr)
+        if feed_stale:
+            print("feed.xml устарел: запустите `python scripts/gen_site.py`", file=sys.stderr)
         return 1
 
     if index_stale:
@@ -436,11 +545,13 @@ def main() -> int:
         path.write_text(content, encoding="utf-8")
     if sitemap_stale:
         SITEMAP.write_text(updated_sitemap, encoding="utf-8")
+    if feed_stale:
+        FEED.write_text(updated_feed, encoding="utf-8")
 
     shown = len(visible_articles(manifest))
     hidden = len(manifest["articles"]) - shown
     note = f", скрыто {hidden}" if hidden else ""
-    print(f"index.html, {len(updated_pages)} страниц статей и sitemap.xml обновлены ({shown} статей{note})")
+    print(f"index.html, {len(updated_pages)} страниц статей, sitemap.xml и feed.xml обновлены ({shown} статей{note})")
     return 0
 
 

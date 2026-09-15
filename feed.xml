@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>Журнал Прикладной Лженауки</title>
+  <link>https://darthbeltazar.github.io/AbsoluteScience/</link>
+  <description>Рецензируемое периодическое издание Института Прикладной Метафизики, публикующее оригинальные исследования на стыке точных и гуманитарных наук.</description>
+  <language>ru</language>
+  <lastBuildDate>Mon, 07 Sep 2026 00:00:00 GMT</lastBuildDate>
+  <item>
+    <title>К термодинамическому обоснованию бурмалды</title>
+    <link>https://darthbeltazar.github.io/AbsoluteScience/articles/termodinamika_burmaldy.html</link>
+    <guid isPermaLink="true">https://darthbeltazar.github.io/AbsoluteScience/articles/termodinamika_burmaldy.html</guid>
+    <pubDate>Sun, 06 Sep 2026 00:00:00 GMT</pubDate>
+    <author>Роман Георгиевич Александров, Клод Соннет Антропикович</author>
+    <description>Здесь мы впервые показываем, что упадок вечера — не психологическая, а строгая термодинамическая закономерность, вытекающая из статистической механики замкнутой компании. Бытовое объяснение («все устали», «не туда свернул разговор») систематически игнорирует базовый факт: число доступных компании микросостояний реплик Ω по определению не убывает со временем, если компания замкнута. В настоящей работе мы вводим бурмалду Б как экстенсивную величину состояния компании по образцу энтропии…</description>
+  </item>
+  <item>
+    <title>Пороховой парадокс трубы с пробкой</title>
+    <link>https://darthbeltazar.github.io/AbsoluteScience/articles/porokhovoy_paradoks_pwa.html</link>
+    <guid isPermaLink="true">https://darthbeltazar.github.io/AbsoluteScience/articles/porokhovoy_paradoks_pwa.html</guid>
+    <pubDate>Mon, 07 Sep 2026 00:00:00 GMT</pubDate>
+    <author>Роман Георгиевич Александров, Юрий Пыркович Михаилов, Клод Соннет Антропикович</author>
+    <description>Здесь мы впервые показываем, что метательное изделие, собранное из [ЗАСЕКРЕЧЕНО] и запираемое элементом типа «пробка», представляет собой не хаотическое устройство, а строгую реализацию адиабатического расширения газа в цилиндре, выходящего на жёсткий предел скорости, и что все его наблюдаемые отказы лежат на одной аналитической кривой. Проблема состояла в том, что изделие PWA, разработанное по заказу [ЗАСЕКРЕЧЕНО] и рассекреченное лишь в текущем году, до сих пор описывалось исключительно на…</description>
+  </item>
+  <item>
+    <title>К обоснованию тензорного анализа личности</title>
+    <link>https://darthbeltazar.github.io/AbsoluteScience/articles/tenzornaya_psikhometriya.html</link>
+    <guid isPermaLink="true">https://darthbeltazar.github.io/AbsoluteScience/articles/tenzornaya_psikhometriya.html</guid>
+    <pubDate>Sat, 05 Sep 2026 00:00:00 GMT</pubDate>
+    <author>Роман Георгиевич Александров, Клод Соннет Антропикович</author>
+    <description>Здесь мы впервые показываем, что предвзятость оценки личности — не гносеологическая, а геометрическая проблема, допускающая строгое решение методами общей теории относительности. Существующие подходы к оценке личности — от бытовых суждений («он ленивый») до формализованных опросников — систематически игнорируют базовый факт: любая характеристика человека задаётся в некоторой системе отсчёта наблюдателя и потому по определению координатно-зависима. В настоящей работе мы последовательно переносим…</description>
+  </item>
+</channel>
+</rss>
