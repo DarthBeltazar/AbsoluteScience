@@ -374,6 +374,9 @@ h2.section-title{
    тега общий (см. правило выше); ниже — только то, что нужно кнопке. */
 .keywords button.kw{
   font:inherit;
+  color:inherit;         /* <button> не наследует цвет текста по умолчанию, в
+                             отличие от <span> — без этого текст брал цвет
+                             системной кнопки (чёрный) и терялся на тёмном фоне */
   cursor:pointer;
 }
 .keywords button.kw:hover{
