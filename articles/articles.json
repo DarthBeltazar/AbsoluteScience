@@ -3,6 +3,11 @@
     "volume": 1,
     "year": 2026
   },
+  "people": [
+    { "id": "aleksandrov", "name": "Роман Георгиевич Александров" },
+    { "id": "antropikovich", "name": "Клод Соннет Антропикович" },
+    { "id": "mikhailov", "name": "Юрий Пыркович Михаилов" }
+  ],
   "articles": [
     {
       "id": "tenzornaya_psikhometriya",
