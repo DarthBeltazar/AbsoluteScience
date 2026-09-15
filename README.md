@@ -55,3 +55,11 @@ CI (`.github/workflows/build.yml`) собирает PDF на каждый push/P
 
 Подробности по стилю и оформлению — в [руководстве для авторов](guide/zhurnal_prikladnoy_lzhenauki_guide.md);
 заметки для Claude Code — в [`CLAUDE.md`](CLAUDE.md).
+
+## Лицензия
+
+Статьи (`articles/*.tex`, `*.pdf`, `articles.json`) — [CC BY 4.0](LICENSE-CONTENT):
+копировать и адаптировать можно, включая коммерческое использование, при указании авторства.
+
+Код сайта и сборки (`scripts/gen_site.py`, `articles/zhpl.sty`, `index.html`, `404.html`,
+`assets/*.css`, `assets/*.js`, `Makefile`, `build.ps1`) — [MIT](LICENSE).
