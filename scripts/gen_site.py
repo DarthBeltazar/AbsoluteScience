@@ -17,6 +17,14 @@ noindex). В index.html скрипт трогает только области 
                                                                (карточки #people;
                                                                id берётся из
                                                                articles.json → people)
+    <!-- STAT:hindex:<id> --> ... <!-- /STAT:hindex:<id> --> — h-индекс автора (карточки
+                                                               #people, только где маркер
+                                                               присутствует); при 100%
+                                                               самоцитировании (см. карточку
+                                                               aleksandrov) каждая статья
+                                                               цитирует все остальные статьи
+                                                               того же автора, так что
+                                                               h-индекс = число статей
 
 Каждой статье (включая скрытые) генерируется полноценная страница
 articles/<slug>.html с полным текстом, вложенной PDF-читалкой и своими
@@ -371,6 +379,12 @@ def render_people_stats(manifest: dict, text: str) -> str:
         word = ru_count(count, "статья", "статьи", "статей")
         inner = f"<strong>{count}</strong> {word}"
         text = replace_region(text, f"STAT:person:{person['id']}", inner, block=False)
+        # 100% самоцитирование (см. карточку aleksandrov) → каждая статья
+        # цитирует все остальные статьи автора → h-индекс = число статей.
+        hindex_inner = f"<strong>{count}</strong> h-индекс"
+        text = replace_region_optional(
+            text, f"STAT:hindex:{person['id']}", hindex_inner, block=False
+        )
     return text
 
 
@@ -454,6 +468,18 @@ def render_feed(manifest: dict) -> str:
 
 
 # ---------- index.html: замена именованных областей ----------
+
+def replace_region_optional(text: str, name: str, inner: str, *, block: bool) -> str:
+    """Как replace_region, но молча ничего не делает, если маркер отсутствует —
+    для необязательных STAT-блоков, которые есть не на каждой карточке
+    (например, h-индекс сейчас показан только у aleksandrov)."""
+    open_m, close_m = f"<!-- {name} -->", f"<!-- /{name} -->"
+    pattern = re.compile(re.escape(open_m) + r".*?" + re.escape(close_m), re.DOTALL)
+    if not pattern.search(text):
+        return text
+    repl = f"{open_m}{inner}{close_m}"
+    return pattern.sub(lambda _: repl, text, count=1)
+
 
 def replace_region(text: str, name: str, inner: str, *, block: bool) -> str:
     """Заменить содержимое между парными маркерами-комментариями.
