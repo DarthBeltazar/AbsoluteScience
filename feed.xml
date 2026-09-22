@@ -5,7 +5,15 @@
   <link>https://darthbeltazar.github.io/AbsoluteScience/</link>
   <description>Рецензируемое периодическое издание Института Прикладной Метафизики, публикующее оригинальные исследования на стыке точных и гуманитарных наук.</description>
   <language>ru</language>
-  <lastBuildDate>Tue, 15 Sep 2026 00:00:00 GMT</lastBuildDate>
+  <lastBuildDate>Tue, 22 Sep 2026 00:00:00 GMT</lastBuildDate>
+  <item>
+    <title>К стохастическому обоснованию закона подлости</title>
+    <link>https://darthbeltazar.github.io/AbsoluteScience/articles/zakon_podlosti.html</link>
+    <guid isPermaLink="true">https://darthbeltazar.github.io/AbsoluteScience/articles/zakon_podlosti.html</guid>
+    <pubDate>Tue, 22 Sep 2026 00:00:00 GMT</pubDate>
+    <author>Роман Георгиевич Александров, Юрий Пыркович Михаилов, Клод Соннет Антропикович</author>
+    <description>Здесь мы впервые показываем, что выход модели Claude Opus 5.5 компании Anthropic через 20 минут после оформления соавтором настоящей работы подписки на ChatGPT является не проявлением невезения, а строгой закономерностью, вытекающей из теории точечных процессов. Проблема состоит в том, что наивная пуассоновская оценка вероятности такого события составляет 1,52·10⁻⁴, тогда как наблюдаемая частота равна единице. Метод: релизы моделей описываются взаимно возбуждающимся процессом Хоукса, момент…</description>
+  </item>
   <item>
     <title>К квантовополевому обоснованию рояля в кустах</title>
     <link>https://darthbeltazar.github.io/AbsoluteScience/articles/royal_v_kustah.html</link>
