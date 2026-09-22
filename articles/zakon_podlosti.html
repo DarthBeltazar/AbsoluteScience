@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>К стохастическому обоснованию закона подлости — Журнал Прикладной Лженауки</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Здесь мы впервые показываем, что выход модели Claude Opus 5.5 компании Anthropic через 20 минут после оформления соавтором настоящей работы подписки на ChatGPT является не проявлением невезения, а…">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Журнал Прикладной Лженауки">
+<meta property="og:title" content="К стохастическому обоснованию закона подлости">
+<meta property="og:description" content="Здесь мы впервые показываем, что выход модели Claude Opus 5.5 компании Anthropic через 20 минут после оформления соавтором настоящей работы подписки на ChatGPT является не проявлением невезения, а…">
+<meta property="og:url" content="https://darthbeltazar.github.io/AbsoluteScience/articles/zakon_podlosti.html">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:image" content="https://darthbeltazar.github.io/AbsoluteScience/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="К стохастическому обоснованию закона подлости">
+<meta name="twitter:description" content="Здесь мы впервые показываем, что выход модели Claude Opus 5.5 компании Anthropic через 20 минут после оформления соавтором настоящей работы подписки на ChatGPT является не проявлением невезения, а…">
+<meta name="twitter:image" content="https://darthbeltazar.github.io/AbsoluteScience/assets/og-image.png">
+<link rel="canonical" href="https://darthbeltazar.github.io/AbsoluteScience/articles/zakon_podlosti.html">
+
+<meta name="theme-color" content="#faf6ee" id="theme-color-meta">
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg" media="(prefers-color-scheme: light)" id="favicon-light">
+<link rel="icon" type="image/svg+xml" href="../assets/logo-mark-dark.svg" media="(prefers-color-scheme: dark)" id="favicon-dark">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script>
+// Применяем сохранённый выбор темы до отрисовки — иначе будет вспышка не той темы.
+(function () {
+  try {
+    var t = localStorage.getItem('zhpl:theme');
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="masthead-top">
+      <picture class="seal">
+        <source srcset="../assets/logo-seal-dark.svg" media="(prefers-color-scheme: dark)" id="seal-dark-source">
+        <img src="../assets/logo-seal.svg" alt="Печать журнала: Журнал Прикладной Лженауки, Институт Прикладной Метафизики" width="86" height="86">
+      </picture>
+      <div class="masthead-titles">
+        <h1><a href="../index.html">Журнал Прикладной Лженауки</a></h1>
+        <p class="affil">Институт Прикладной Метафизики · Кафедра тензорного анализа межличностных отношений</p>
+      </div>
+    </div>
+
+    <nav class="top-nav">
+      <a href="../index.html#issue">← Все статьи</a>
+      <a href="../index.html#people">Авторы</a>
+      <a href="../index.html#authors">Для авторов</a>
+      <a href="https://github.com/DarthBeltazar/AbsoluteScience">Репозиторий</a>
+      <button type="button" class="theme-toggle" id="theme-toggle-btn" aria-pressed="false" onclick="toggleTheme()">🌙 Тёмная тема</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section id="article">
+      <article class="article">
+        <p class="article-kicker">Журнал Прикладной Лженауки · 1(5) · 2026</p>
+        <h3>К стохастическому обоснованию закона подлости:<br>
+        самовозбуждающийся процесс релизов, теорема о модальной неизбежности и антропный принцип в задачах о подписке, самостоятельной и домашнем задании</h3>
+        <p class="authors">Роман Георгиевич Александров, Юрий Пыркович Михаилов, Клод Соннет Антропикович — Институт Прикладной Метафизики</p>
+
+        <span class="abstract-label">Аннотация</span>
+        <p class="abstract">
+          Здесь мы впервые показываем, что выход модели Claude Opus 5.5 компании Anthropic через 20 минут после оформления соавтором настоящей работы подписки на ChatGPT является не проявлением невезения, а строгой закономерностью, вытекающей из теории точечных процессов. Проблема состоит в том, что наивная пуассоновская оценка вероятности такого события составляет 1,52·10⁻⁴, тогда как наблюдаемая частота равна единице. Метод: релизы моделей описываются взаимно возбуждающимся процессом Хоукса, момент покупки рассматривается как марковский момент, индуцированный релизом конкурирующей стороны, а наблюдаемая частота корректируется на эффект наблюдательной селекции. Результаты: введено число подлости 𝓜; доказаны теоремы о модальной неизбежности, о невозможности своевременной покупки, о калибровочной инвариантности подлости и антропная теорема; получена точная факторизация ln 𝓜 на хоуксову (30 %) и антропную (70 %) компоненты. Метод обобщён на два школьных проявления закона подлости: закон притяжения контрольных, сведённый к сверхпуассоновской дисперсии числа самостоятельных в день, и парадокс несделанного домашнего задания, сведённый к задаче обнаружения сигнала. Ограничения: выборка объёма 1; антропная компонента объясняет наблюдаемое событие ровно так же хорошо, как объяснила бы любое другое.
+        </p>
+
+        <ul class="highlights">
+          <li>Впервые введено <em>число подлости</em> 𝓜 и получено его экспериментальное значение 𝓜 = 6575 для события «подписка → релиз конкурента за 20 мин»; покупка, индуцированная релизом, попадает на пик самовозбуждённой интенсивности релизов конкурента (×14,1).</li>
+          <li>Доказана <em>теорема о модальной неизбежности</em> (Теорема 1): наиболее вероятный момент выхода следующей модели — непосредственно после покупки.</li>
+          <li>Доказано, что момент покупки невозможно выбрать удачно (Теорема 2), выбор поставщика является калибровочной степенью свободы (Теорема 3), а условная вероятность наблюдаемого события равна единице (Теорема 4).</li>
+          <li>Сформулирован <em>закон притяжения контрольных</em>: самостоятельные притягиваются тогда и только тогда, когда параметр формы k &lt; 1 (Теорема 5), причём сговор учителей строго неотличим от конца четверти (Теорема 6).</li>
+          <li>Разрешён <em>парадокс несделанного домашнего задания</em>: несделанное задание проверяется в 10,4 раза чаще сделанного (Теорема 7), а с учётом забывания — в 103 раза.</li>
+        </ul>
+
+        <p class="keywords">
+          <span class="kw">закон подлости</span><span class="kw">процесс Хоукса</span><span class="kw">время ожидания</span><span class="kw">марковский момент</span><span class="kw">калибровочная инвариантность</span><span class="kw">антропный принцип</span><span class="kw">притяжение контрольных</span><span class="kw">обнаружение сигнала</span><span class="kw">лженаука</span>
+        </p>
+
+        <div class="cite-box">
+          Как цитировать: Александров Р.Г., Михаилов Ю.П., Антропикович К.С. (2026). К стохастическому
+          обоснованию закона подлости. <em>Журнал Прикладной Лженауки</em>, 1(5), 1–15.
+          <span class="doi">DOI: 10.9999/жпл.2026.0005</span>
+        </div>
+
+        <div class="article-actions">
+          <button type="button" class="btn read-btn" aria-expanded="false" onclick="toggleReader(this, 'reader')">Читать на сайте</button>
+          <a class="btn secondary" href="zakon_podlosti.pdf">Скачать PDF</a>
+          <a class="btn secondary" href="zakon_podlosti.tex">Исходник (.tex)</a>
+        </div>
+
+        <div class="pdf-reader-wrap" id="reader-wrap" hidden>
+          <div class="pdf-reader-bar">
+            <span class="pdf-reader-name">К стохастическому обоснованию закона подлости</span>
+            <button type="button" class="pdf-dark-btn" aria-pressed="false" onclick="togglePdfDark()">Тёмный PDF</button>
+            <a class="pdf-reader-link" href="zakon_podlosti.pdf#view=FitH" target="_blank" rel="noopener">Открыть отдельно ↗</a>
+          </div>
+          <iframe id="reader" class="pdf-reader"
+                  data-src="zakon_podlosti.pdf#view=FitH" data-dark-src="zakon_podlosti.dark.pdf#view=FitH"
+                  title="К стохастическому обоснованию закона подлости — полный текст"></iframe>
+        </div>
+      </article>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Журнал Прикладной Лженауки · Институт Прикладной Метафизики</p>
+    <p>ISSN 9999-9999 (online, вымышленный) · Рецензент 2 замечаний не имеет</p>
+    <p><a href="https://github.com/DarthBeltazar/AbsoluteScience">github.com/DarthBeltazar/AbsoluteScience</a></p>
+  </div>
+</footer>
+
+<script src="../assets/theme.js"></script>
+<script src="../assets/reader.js"></script>
+</body>
+</html>
