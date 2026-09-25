@@ -401,6 +401,40 @@ h2.section-title{
 
 .cite-box .doi{display:block; margin-top:4px;}
 
+/* BibTeX-запись под cite-box на странице статьи (генерирует gen_site.py). */
+.bibtex{
+  font-family:var(--sans);
+  font-size:0.8rem;
+  margin:-8px 0 18px;
+}
+.bibtex summary{
+  cursor:pointer;
+  color:var(--blue);
+  width:max-content;
+}
+.bibtex pre{
+  font-family:Consolas, "Courier New", monospace;
+  font-size:0.78rem;
+  line-height:1.45;
+  color:var(--ink);
+  background:var(--paper-2);
+  border:1px solid var(--rule);
+  border-radius:4px;
+  padding:10px 14px;
+  margin:8px 0;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  user-select:all;
+}
+.bibtex .bibtex-copy{
+  font-family:inherit;
+  font-size:0.8rem;
+  padding:5px 12px;
+  background:none;      /* <button>, а не <a>: сбросить системный фон кнопки */
+  cursor:pointer;
+}
+.bibtex .bibtex-copy:hover{ background:var(--ink-soft); }
+
 .article-actions{
   display:flex;
   gap:14px;
@@ -655,6 +689,7 @@ footer a{color:var(--ink-soft);}
   .badges,
   .article-actions,
   .kw-filter-status,
+  .bibtex,
   .pdf-reader-wrap{ display:none !important; }
   /* Печать игнорирует активный на экране фильтр по тегу — печатается весь номер. */
   #issue .article[hidden]{ display:block !important; }

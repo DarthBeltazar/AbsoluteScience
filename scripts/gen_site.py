@@ -27,9 +27,16 @@ noindex). В index.html скрипт трогает только области 
                                                                h-индекс = число статей
 
 Каждой статье (включая скрытые) генерируется полноценная страница
-articles/<slug>.html с полным текстом, вложенной PDF-читалкой и своими
-og:title/og:description — она перезаписывается целиком, как и sitemap.xml
-и feed.xml. Остальная разметка index.html не изменяется.
+articles/<slug>.html с полным текстом, вложенной PDF-читалкой, блоком BibTeX
+и своими og:title/og:description/og:image — она перезаписывается целиком, как
+и sitemap.xml и feed.xml. Остальная разметка index.html не изменяется.
+
+Превью для соцсетей (og:image) у каждой статьи своё: assets/og/<slug>.png.
+SVG-карточку строит render_og_svg() отсюда, а в PNG её растеризует отдельный
+scripts/render_og.py (нужен настоящий браузер и шрифт Georgia — в CI их нет).
+render_og.py записывает в PNG хэш SVG (чанк tEXt), и --check проверяет, что
+PNG каждой статьи есть и отрисован из текущего SVG, — иначе после правки
+заголовка или DOI в соцсетях осталась бы старая карточка.
 
 Авторы статьи задаются как "authorIds": ["id", ...] — список id из
 articles.json → people, в порядке отображения. Строка «Имя, Имя — Институт»
@@ -43,9 +50,11 @@ articles.json → people, в порядке отображения. Строка
 from __future__ import annotations
 
 import argparse
+import hashlib
 import html
 import json
 import re
+import struct
 import sys
 from datetime import datetime, timezone
 from email.utils import format_datetime
@@ -57,7 +66,9 @@ INDEX = ROOT / "index.html"
 SITEMAP = ROOT / "sitemap.xml"
 FEED = ROOT / "feed.xml"
 ARTICLES_DIR = ROOT / "articles"
+OG_DIR = ROOT / "assets" / "og"
 BASE_URL = "https://darthbeltazar.github.io/AbsoluteScience/"
+JOURNAL_NAME = "Журнал Прикладной Лженауки"
 
 
 def short_title(title_html: str) -> str:
@@ -185,6 +196,197 @@ def render_articles(manifest: dict) -> str:
     return "\n\n".join(blocks)
 
 
+# ---------- Выходные данные статьи (из citeHtml) ----------
+
+CITE_RE = re.compile(
+    r"^(?P<authors>.*?)\s*\((?P<year>\d{4})\)\..*?"
+    r"(?P<volume>\d+)\((?P<number>\d+)\),\s*(?P<first>\d+)\s*[–-]\s*(?P<last>\d+)"
+)
+
+
+def cite_parts(art: dict) -> dict[str, str]:
+    """Разобрать citeHtml («Александров Р.Г., … (2026). … 1(6), 1–13.») на
+    короткую строку авторов, год, том, выпуск и страницы — это единственное
+    место в articles.json, где хранятся страницы, так что BibTeX и
+    OG-карточка берут их отсюда, а не дублируют отдельными полями."""
+    m = CITE_RE.search(plain_text(art["citeHtml"]))
+    if not m:
+        sys.exit(f"error: не удалось разобрать citeHtml статьи {art['id']}")
+    return m.groupdict()
+
+
+# ---------- BibTeX ----------
+
+def bibtex_escape(text: str) -> str:
+    """Экранировать спецсимволы TeX в значении поля BibTeX."""
+    return re.sub(r"([%&#_$])", r"\\\1", text)
+
+
+def bibtex_author(person: dict) -> str:
+    """«Имя Отчество Фамилия» → «Фамилия, Имя Отчество». Коллективный автор
+    (people[].bibName, например анонимный коллектив) берётся в фигурные
+    скобки целиком, чтобы BibTeX не принял последнее слово за фамилию."""
+    if "bibName" in person:
+        return "{" + bibtex_escape(person["bibName"]) + "}"
+    *given, surname = person["name"].split()
+    return bibtex_escape(f"{surname}, {' '.join(given)}")
+
+
+def render_bibtex(art: dict, manifest: dict) -> str:
+    people = people_by_id(manifest)
+    cite = cite_parts(art)
+    title = plain_text(art["titleHtml"])
+    fields = [
+        ("author", " and ".join(bibtex_author(people[pid]) for pid in art["authorIds"])),
+        ("title", bibtex_escape(title)),
+        ("journal", JOURNAL_NAME),
+        ("year", cite["year"]),
+        ("volume", cite["volume"]),
+        ("number", cite["number"]),
+        ("pages", f"{cite['first']}--{cite['last']}"),
+        ("doi", art["doi"]),
+        ("url", f"{BASE_URL}articles/{art['id']}.html"),
+        ("language", "russian"),
+    ]
+    body = ",\n".join(f"  {k:<8} = {{{v}}}" for k, v in fields)
+    return f"@article{{{art['id']}{cite['year']},\n{body}\n}}"
+
+
+# ---------- OG-карточка (превью для соцсетей) ----------
+
+def wrap_words(text: str, width: int, max_lines: int) -> list[str]:
+    """Перенос по словам для SVG (в SVG нет автопереноса). Ширина — в символах:
+    метрик Georgia в CI нет, а вывод должен быть детерминирован, поэтому
+    запас взят с расчётом на самые широкие строки. Лишнее обрезается «…».
+    Короткие слова (предлоги, союзы: «с», «и», «в») не остаются в конце
+    строки — они приклеиваются к следующему слову, как неразрывным пробелом."""
+    words: list[str] = []
+    for word in text.split():
+        if words and len(words[-1].rsplit(" ", 1)[-1]) <= 2:
+            words[-1] += " " + word
+        else:
+            words.append(word)
+    lines: list[str] = []
+    for word in words:
+        if lines and len(lines[-1]) + 1 + len(word) <= width:
+            lines[-1] += " " + word
+        else:
+            lines.append(word)
+    if len(lines) > max_lines:
+        lines = lines[:max_lines]
+        lines[-1] = lines[-1].rstrip(",.;:—-") + "…"
+    return lines
+
+
+def svg_text_lines(lines: list[str], *, x: int, y: int, step: int, attrs: str) -> str:
+    return "\n".join(
+        f'  <text x="{x}" y="{y + i * step}" {attrs}>{html.escape(line)}</text>'
+        for i, line in enumerate(lines)
+    )
+
+
+OG_SERIF = "Georgia, 'Times New Roman', serif"
+OG_SANS = "'Trebuchet MS', 'Segoe UI', Helvetica, Arial, sans-serif"
+
+
+def render_og_svg(art: dict, manifest: dict) -> str:
+    """SVG 1200×630 для og:image статьи: печать и название журнала, заголовок,
+    подзаголовок, авторы и DOI. Та же палитра и печать, что в
+    assets/og-image.svg (общая карточка главной)."""
+    cite = cite_parts(art)
+    main_title, _, subtitle = plain_text(art["titleHtml"]).partition(":")
+    title_lines = wrap_words(main_title.strip(), 33, 3)
+    sub_lines = wrap_words(subtitle.strip(), 70, 3) if subtitle.strip() else []
+
+    title_y, title_step = 262, 60
+    sub_y = title_y + (len(title_lines) - 1) * title_step + 52
+    title_svg = svg_text_lines(
+        title_lines, x=70, y=title_y, step=title_step,
+        attrs=f'font-family="{OG_SERIF}" font-size="50" font-weight="700" fill="#2a241c"',
+    )
+    sub_svg = svg_text_lines(
+        sub_lines, x=70, y=sub_y, step=36,
+        attrs=f'font-family="{OG_SERIF}" font-style="italic" font-size="26" fill="#5b5344"',
+    )
+    issue = f"Том {cite['volume']}, выпуск {cite['number']} · {cite['year']}"
+    authors = html.escape(cite["authors"])
+    doi = html.escape(f"DOI: {art['doi']}")
+
+    return f"""<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#faf6ee"/>
+  <rect x="0" y="0" width="1200" height="2" fill="#2a241c"/>
+  <rect x="0" y="5" width="1200" height="1.2" fill="#2a241c"/>
+  <rect x="0" y="622.8" width="1200" height="1.2" fill="#2a241c"/>
+  <rect x="0" y="628" width="1200" height="2" fill="#2a241c"/>
+
+  <g transform="translate(70,48) scale(0.475)">
+    <circle cx="120" cy="120" r="114" fill="none" stroke="#2a241c" stroke-width="4"/>
+    <circle cx="120" cy="120" r="84" fill="none" stroke="#2a241c" stroke-width="1.6"/>
+    <g transform="translate(120,106) scale(1.3) translate(-120,-120)">
+      <text x="88" y="140" font-family="{OG_SERIF}" font-style="italic" font-size="56" fill="#2a241c">R</text>
+      <text x="134" y="104" font-family="{OG_SERIF}" font-style="italic" font-size="20" fill="#2a241c">&#961;</text>
+      <text x="134" y="150" font-family="{OG_SERIF}" font-style="italic" font-size="18" fill="#2a241c">&#963;&#956;&#957;</text>
+      <line x1="78" y1="158" x2="162" y2="158" stroke="#2a241c" stroke-width="1.2"/>
+    </g>
+  </g>
+  <text x="205" y="100" font-family="{OG_SERIF}" font-size="30" font-weight="700" letter-spacing="1" fill="#2a241c">ЖУРНАЛ ПРИКЛАДНОЙ ЛЖЕНАУКИ</text>
+  <text x="205" y="134" font-family="{OG_SANS}" font-size="19" fill="#5b5344">{html.escape(issue)} · Институт Прикладной Метафизики</text>
+
+  <g font-family="{OG_SANS}" font-size="13.5" font-weight="700" letter-spacing="0.4">
+    <rect x="954" y="44" width="176" height="30" rx="4" fill="#e9eff6" stroke="#2c4a73" stroke-width="1.2"/>
+    <text x="1042" y="64" text-anchor="middle" fill="#2c4a73">IMPACT FACTOR: ∞</text>
+  </g>
+
+  <line x1="70" y1="190" x2="1130" y2="190" stroke="#d8cdb4" stroke-width="1.5"/>
+
+{title_svg}
+{sub_svg}
+
+  <line x1="70" y1="530" x2="1130" y2="530" stroke="#d8cdb4" stroke-width="1.5"/>
+  <text x="70" y="572" font-family="{OG_SANS}" font-size="21" fill="#2a241c">{authors}</text>
+  <text x="1130" y="572" text-anchor="end" font-family="{OG_SANS}" font-size="19" fill="#2c4a73">{doi}</text>
+</svg>
+"""
+
+
+def og_svg_hash(svg: str) -> str:
+    """Хэш именно сгенерированной строки, а не байтов файла: при
+    core.autocrlf=true файлы на Windows и в CI отличаются концами строк."""
+    return hashlib.sha256(svg.encode("utf-8")).hexdigest()
+
+
+OG_HASH_KEY = b"zhpl-svg-sha256"
+
+
+def png_text_chunk(path: Path, key: bytes) -> str | None:
+    """Прочитать значение tEXt-чанка с ключом key из PNG (только stdlib —
+    в CI нет Pillow). None, если файла или чанка нет."""
+    if not path.exists():
+        return None
+    data = path.read_bytes()
+    pos = 8  # сигнатура PNG
+    while pos + 8 <= len(data):
+        length, ctype = struct.unpack(">I4s", data[pos:pos + 8])
+        chunk = data[pos + 8:pos + 8 + length]
+        if ctype == b"tEXt" and chunk.startswith(key + b"\0"):
+            return chunk[len(key) + 1:].decode("latin-1")
+        if ctype == b"IEND":
+            break
+        pos += 12 + length
+    return None
+
+
+def stale_og_images(manifest: dict) -> list[Path]:
+    """PNG-превью, которых нет или которые отрисованы из устаревшего SVG.
+    Включая скрытые статьи — у их страниц тоже есть og:image."""
+    stale = []
+    for art in manifest["articles"]:
+        path = OG_DIR / f"{art['id']}.png"
+        if png_text_chunk(path, OG_HASH_KEY) != og_svg_hash(render_og_svg(art, manifest)):
+            stale.append(path)
+    return stale
+
+
 # ---------- Полный текст статьи (используется только на её отдельной странице) ----------
 
 def render_article_body(art: dict, manifest: dict) -> str:
@@ -210,6 +412,7 @@ def render_article_body(art: dict, manifest: dict) -> str:
         f"          <li>{h}</li>" for h in art["highlights"]
     )
     keywords = render_keywords(art["keywords"], interactive=False)
+    bibtex = html.escape(render_bibtex(art, manifest))
 
     return f"""      <article class="article">
         <p class="article-kicker">{kicker}</p>
@@ -233,6 +436,12 @@ def render_article_body(art: dict, manifest: dict) -> str:
           Как цитировать: {cite_html}
           <span class="doi">DOI: {doi}</span>
         </div>
+
+        <details class="bibtex">
+          <summary>BibTeX</summary>
+          <pre id="bibtex-src">{bibtex}</pre>
+          <button type="button" class="btn secondary bibtex-copy" onclick="copyBibtex(this, 'bibtex-src')">Скопировать</button>
+        </details>
 
         <div class="article-actions">
           <button type="button" class="btn read-btn" aria-expanded="false" onclick="toggleReader(this, 'reader')">Читать на сайте</button>
@@ -265,6 +474,8 @@ def render_article_page(art: dict, manifest: dict) -> str:
         '\n<meta name="robots" content="noindex">' if art.get("hidden") else ""
     )
     body = render_article_body(art, manifest)
+    og_image = f"{BASE_URL}assets/og/{art['id']}.png"
+    og_alt = html.escape(f"{JOURNAL_NAME}: {short}")
 
     return f"""<!DOCTYPE html>
 <html lang="ru">
@@ -280,13 +491,14 @@ def render_article_page(art: dict, manifest: dict) -> str:
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{canonical}">
 <meta property="og:locale" content="ru_RU">
-<meta property="og:image" content="{BASE_URL}assets/og-image.png">
+<meta property="og:image" content="{og_image}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{og_alt}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{html.escape(short)}">
 <meta name="twitter:description" content="{description}">
-<meta name="twitter:image" content="{BASE_URL}assets/og-image.png">
+<meta name="twitter:image" content="{og_image}">
 <link rel="canonical" href="{canonical}">
 
 <meta name="theme-color" content="#faf6ee" id="theme-color-meta">
@@ -349,6 +561,7 @@ def render_article_page(art: dict, manifest: dict) -> str:
 
 <script src="../assets/theme.js"></script>
 <script src="../assets/reader.js"></script>
+<script src="../assets/cite.js"></script>
 </body>
 </html>
 """
@@ -549,10 +762,19 @@ def main() -> int:
     index_stale = updated_index != current_index
     sitemap_stale = updated_sitemap != current_sitemap
     feed_stale = updated_feed != current_feed
+    stale_og = stale_og_images(manifest)
+
+    # PNG-превью этот скрипт не пишет (нужен браузер) — только сообщает.
+    for path in stale_og:
+        print(
+            f"{path.relative_to(ROOT).as_posix()} отсутствует или устарел: "
+            "запустите `python scripts/render_og.py`",
+            file=sys.stderr,
+        )
 
     if not index_stale and not sitemap_stale and not feed_stale and not stale_pages:
         print("index.html, articles/*.html, sitemap.xml и feed.xml уже синхронны с articles/articles.json")
-        return 0
+        return 1 if args.check and stale_og else 0
 
     if args.check:
         if index_stale:

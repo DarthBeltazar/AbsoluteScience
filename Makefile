@@ -3,20 +3,24 @@
 #   make           собрать статьи и пересобрать сайт
 #   make articles  только PDF (latexmk + XeLaTeX, см. articles/.latexmkrc)
 #   make site      только index.html из articles/articles.json
+#   make og        PNG-превью статей для соцсетей (assets/og/, нужен Chrome/Edge)
 #   make check     проверить, что сайт синхронен с манифестом (для CI)
 #   make clean     удалить промежуточные файлы LaTeX (PDF остаются)
 
 PYTHON ?= python
 
-.PHONY: all articles site check clean
+.PHONY: all articles site og check clean
 
-all: articles site
+all: articles site og
 
 articles:
 	cd articles && latexmk
 
 site:
 	$(PYTHON) scripts/gen_site.py
+
+og:
+	$(PYTHON) scripts/render_og.py
 
 check:
 	$(PYTHON) scripts/gen_site.py --check

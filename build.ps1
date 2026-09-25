@@ -3,14 +3,15 @@
     Сборка «Журнала Прикладной Лженауки» на Windows (аналог Makefile для тех, у кого нет make).
 
 .DESCRIPTION
-    Без параметров: собирает статьи (latexmk + XeLaTeX) и пересобирает index.html из
-    articles/articles.json.
+    Без параметров: собирает статьи (latexmk + XeLaTeX), пересобирает index.html из
+    articles/articles.json и перерисовывает устаревшие PNG-превью статей (assets/og/,
+    headless Chrome/Edge).
 
 .PARAMETER ArticlesOnly
     Только компиляция PDF.
 
 .PARAMETER SiteOnly
-    Только регенерация index.html.
+    Только регенерация index.html (и PNG-превью статей).
 
 .PARAMETER Check
     Не писать файлы, а проверить, что index.html синхронен с манифестом; ненулевой
@@ -48,6 +49,11 @@ function Invoke-Site {
     } else {
         Write-Host '==> Регенерация index.html из articles/articles.json' -ForegroundColor Cyan
         & $python $script
+        if ($LASTEXITCODE -ne 0) { throw "gen_site.py завершился с кодом $LASTEXITCODE" }
+        Write-Host '==> PNG-превью статей (assets/og/)' -ForegroundColor Cyan
+        & $python (Join-Path $root 'scripts/render_og.py')
+        if ($LASTEXITCODE -ne 0) { throw "render_og.py завершился с кодом $LASTEXITCODE" }
+        return
     }
     if ($LASTEXITCODE -ne 0) { throw "gen_site.py завершился с кодом $LASTEXITCODE" }
 }
